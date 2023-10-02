@@ -6,8 +6,6 @@
 @inject NavigationManager NavManager
 @inject IToastService ToastService
 
-<MiComponente @key="componentKey" />
-
 <h2>Lista de Usuarios</h2>
 
 <table class="users-table">
@@ -42,12 +40,6 @@
 
 @code {
 
-    #region Component utils
-
-    private int componentKey = 1; //Valor para cambiar la key del componente y forzar recarga
-
-    #endregion
-
     #region User properties Vars n Props
 
     private List<User> users = new List<User>();
@@ -72,13 +64,6 @@
     {
         await userController.DeleteUser(user.UserId);
         ToastService.ShowWarning("Se ha borrado el usuario");
-        ReloadComponent();
     }
-
-    private void ReloadComponent()
-    {
-        componentKey++;
-    }
-
     #endregion
 }

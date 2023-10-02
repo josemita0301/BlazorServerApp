@@ -94,6 +94,8 @@ namespace BlazorServerApp.Controllers
 
                         User loopUser = JsonConvert.DeserializeObject<User>(json);
 
+                        loopUser.UserId = documentSnapShot.Id;
+
                         users.Add(loopUser);
                     }
                 }
@@ -113,14 +115,16 @@ namespace BlazorServerApp.Controllers
             try
             {
                 DocumentReference docRef = firestoreDb.Collection("User").Document(userId);
-                DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
+                DocumentSnapshot documentSnapShot = await docRef.GetSnapshotAsync();
 
-                if (snapshot.Exists)
+                if (documentSnapShot.Exists)
                 {
-                    Dictionary<string, object> userData = snapshot.ToDictionary();
+                    Dictionary<string, object> userData = documentSnapShot.ToDictionary();
                     string json = JsonConvert.SerializeObject(userData);
 
                     user = JsonConvert.DeserializeObject<User>(json);
+
+                    user.UserId = userId;
                 }
             }
             catch (Exception ex)
