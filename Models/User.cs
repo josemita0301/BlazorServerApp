@@ -14,7 +14,7 @@ namespace BlazorServerApp.Models
             Username = username;
             Email = email;
         }
-
+        [FirestoreDocumentId]
         public string UserId { get; set; }
 
         [FirestoreProperty]

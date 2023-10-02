@@ -1,4 +1,15 @@
-﻿@inherits LayoutComponentBase
+﻿@using Blazored.Toast
+@using Blazored.Toast.Configuration;
+@inherits LayoutComponentBase
+
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="5">
+    <CloseButtonContent>
+        <div>
+            <span>&times;</span>
+        </div>
+    </CloseButtonContent>
+</BlazoredToasts>
 
 <PageTitle>BlazorServerApp</PageTitle>
 

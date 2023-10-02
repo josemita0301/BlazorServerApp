@@ -1,7 +1,12 @@
 ﻿@page "/users"
+
 @using BlazorServerApp.Models
 @using BlazorServerApp.Controllers
+
 @inject NavigationManager NavManager
+@inject IToastService ToastService
+
+<MiComponente @key="componentKey" />
 
 <h2>Lista de Usuarios</h2>
 
@@ -35,53 +40,23 @@
     </tbody>
 </table>
 
-<style>
-    .users-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-        .users-table th, .users-table td {
-            border: 1px solid #ccc;
-            padding: 10px 15px;
-            text-align: left;
-        }
-
-        .users-table thead {
-            background-color: #f3f4f6;
-        }
-
-        .users-table tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .users-table tbody tr:hover {
-            background-color: #e9e9e9;
-        }
-
-    .edit-button {
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 3px;
-        cursor: pointer;
-    }
-
-    .delete-button {
-        background-color: #FF0000;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 3px;
-        cursor: pointer;
-    }
-</style>
-
 @code {
+
+    #region Component utils
+
+    private int componentKey = 1; //Valor para cambiar la key del componente y forzar recarga
+
+    #endregion
+
+    #region User properties Vars n Props
+
     private List<User> users = new List<User>();
 
     public UserController userController = new UserController();
+    #endregion
+
+
+    #region Events
 
     protected override async Task OnInitializedAsync()
     {
@@ -96,6 +71,14 @@
     private async void DeleteUser(User user)
     {
         await userController.DeleteUser(user.UserId);
-        users = await userController.GetAllUsers();
+        ToastService.ShowWarning("Se ha borrado el usuario");
+        ReloadComponent();
     }
+
+    private void ReloadComponent()
+    {
+        componentKey++;
+    }
+
+    #endregion
 }

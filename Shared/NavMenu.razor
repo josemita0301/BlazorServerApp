@@ -22,7 +22,7 @@
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/register">
+            <NavLink class="nav-link" href="/register" @onclick="ReloadComponent">
                 <span class="oi oi-plus" aria-hidden="true"></span> Registrar Usuario
             </NavLink>
         </div>
@@ -37,6 +37,8 @@
 </div>
 z
 @code {
+    @inject NavigationManager NavigationManager;
+
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
@@ -44,5 +46,10 @@ z
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void ReloadComponent()
+    {
+        NavigationManager.NavigateTo("register", true);
     }
 }

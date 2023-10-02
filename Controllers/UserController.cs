@@ -18,6 +18,64 @@ namespace BlazorServerApp.Controllers
             firestoreDb = FirestoreDb.Create("blazorserverdb");
         }
 
+        public async Task<bool> CreateUser(User newUser)
+        {
+            try
+            {
+                CollectionReference usersRef = firestoreDb.Collection("User");
+
+                Dictionary<string, object> userDict = new Dictionary<string, object>
+                {
+                    { "age", newUser.Age },
+                    { "name", newUser.Name },
+                    { "password", newUser.Password },
+                    { "username", newUser.Username },
+                    { "email", newUser.Email }
+                };
+
+                await usersRef.AddAsync(userDict);
+
+                return true;  
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al crear el usuario: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> EditUser(User userToUpdate)
+        {
+            if (string.IsNullOrEmpty(userToUpdate.UserId))
+            {
+                Console.WriteLine("UserId no puede estar vacío al editar un usuario.");
+                return false;
+            }
+
+            try
+            {
+                DocumentReference userRef = firestoreDb.Collection("User").Document(userToUpdate.UserId);
+
+                Dictionary<string, object> updates = new Dictionary<string, object>
+                {
+                    { "age", userToUpdate.Age },
+                    { "name", userToUpdate.Name },
+                    { "password", userToUpdate.Password },
+                    { "username", userToUpdate.Username },
+                    { "email", userToUpdate.Email }
+                };
+
+                await userRef.UpdateAsync(updates);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al editar el usuario: {ex.Message}");
+                return false;
+            }
+        }
+
         public async Task<List<User>> GetAllUsers()
         {
             List<User> users = new List<User>();
@@ -33,10 +91,8 @@ namespace BlazorServerApp.Controllers
                     {
                         Dictionary<string, object> user = documentSnapShot.ToDictionary();
                         string json = JsonConvert.SerializeObject(user);
-                        
-                        User loopUser = JsonConvert.DeserializeObject<User>(json);
 
-                        loopUser.UserId = documentSnapShot.Id;
+                        User loopUser = JsonConvert.DeserializeObject<User>(json);
 
                         users.Add(loopUser);
                     }
@@ -44,6 +100,7 @@ namespace BlazorServerApp.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error al obtener todos los usuarios: {ex.Message}");
                 return users;
             }
             return users;
@@ -64,12 +121,11 @@ namespace BlazorServerApp.Controllers
                     string json = JsonConvert.SerializeObject(userData);
 
                     user = JsonConvert.DeserializeObject<User>(json);
-                    user.UserId = snapshot.Id;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al obtener el usuario: {ex.Message}");
+                Console.WriteLine($"Error al obtener el usuario con el id: {ex.Message}");
             }
 
             return user;
@@ -81,37 +137,12 @@ namespace BlazorServerApp.Controllers
             {
                 DocumentReference userRef = firestoreDb.Collection("User").Document(userId);
                 await userRef.DeleteAsync();
-                
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        public async Task<bool> AddUser(User user)
-        {
-            try
-            {
 
                 return true;
             }
             catch (Exception ex)
             {
-                return false;
-            }
-        }
-
-        public async Task<bool> EditUser(User editedUser)
-        {
-            try
-            {
-
-                return true;
-            }
-            catch (Exception ex)
-            {
+                Console.WriteLine($"Error al borrar el usuario: {ex.Message}");
                 return false;
             }
         }
