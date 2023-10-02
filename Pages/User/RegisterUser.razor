@@ -1,0 +1,101 @@
+﻿@page "/register"
+@page "/register/{UserId}"
+@using BlazorServerApp.Controllers;
+@using BlazorServerApp.Models;
+@inject NavigationManager NavManager
+<div class="container">
+    @if (user.UserId == null)
+    {
+        <h2 class="title">Registrar Usuario</h2>
+    }
+    else
+    {
+        <h2 class="title">Modificar Usuario</h2>
+    }
+    
+    <input @bind="user.Name" placeholder="Nombre" />
+    <input @bind="user.Username" placeholder="Nombre de Usuario" />
+    <input @bind="user.Email" type="email" placeholder="Email" />
+    <input @bind="user.Password" type="password" placeholder="Contraseña" />
+    <input @bind="user.Age" type="number" placeholder="Edad" />
+
+    @if (user.UserId == null)
+    {
+        <button @onclick="RegisterOrEditUser">Registrarse</button>
+    }
+    else
+    {
+        <button @onclick="RegisterOrEditUser">Modificar</button>
+    }
+
+    
+</div>
+
+<style>
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    input, button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    button {
+        background-color: #007BFF;
+        color: white;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public string UserId { get; set; }
+
+    private User user = new User();
+
+    private UserController userController = new UserController();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(UserId))
+        {
+            user = await userController.GetUserById(UserId);
+
+            if (user == null) user = new User();
+        }
+    }
+
+    private async void RegisterOrEditUser()
+    {
+        if (!string.IsNullOrEmpty(UserId))
+        {
+            await userController.AddUser(user);
+            NavManager.NavigateTo("/users");
+
+        }
+        else
+        {
+            await userController.EditUser(user);
+            NavManager.NavigateTo("/users");
+        }
+
+        NavManager.NavigateTo("/users");
+    }
+}

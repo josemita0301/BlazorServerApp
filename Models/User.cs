@@ -1,5 +1,4 @@
 ﻿using Google.Cloud.Firestore;
-using Newtonsoft.Json;
 
 namespace BlazorServerApp.Models
 {
@@ -7,7 +6,7 @@ namespace BlazorServerApp.Models
     {
         public User(){ }
 
-        public User(int? age, string name, string password, string username, string email)
+        public User(int age, string name, string password, string username, string email)
         {
             Age = age;
             Name = name;
@@ -19,7 +18,7 @@ namespace BlazorServerApp.Models
         public string UserId { get; set; }
 
         [FirestoreProperty]
-        public Nullable<int> Age { get; set; }
+        public int Age { get; set; }
 
         [FirestoreProperty]
         public string Name { get; set; }

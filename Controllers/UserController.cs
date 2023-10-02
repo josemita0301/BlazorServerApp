@@ -1,7 +1,11 @@
 ﻿using BlazorServerApp.Models;
 using Google.Cloud.Firestore;
+using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
 using System.ComponentModel;
+using System.Drawing;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace BlazorServerApp.Controllers
 {
@@ -42,8 +46,74 @@ namespace BlazorServerApp.Controllers
             {
                 return users;
             }
-
             return users;
+        }
+
+        public async Task<User> GetUserById(string userId)
+        {
+            User user = null;
+
+            try
+            {
+                DocumentReference docRef = firestoreDb.Collection("User").Document(userId);
+                DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
+
+                if (snapshot.Exists)
+                {
+                    Dictionary<string, object> userData = snapshot.ToDictionary();
+                    string json = JsonConvert.SerializeObject(userData);
+
+                    user = JsonConvert.DeserializeObject<User>(json);
+                    user.UserId = snapshot.Id;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener el usuario: {ex.Message}");
+            }
+
+            return user;
+        }
+
+        public async Task<bool> DeleteUser(string userId)
+        {
+            try
+            {
+                DocumentReference userRef = firestoreDb.Collection("User").Document(userId);
+                await userRef.DeleteAsync();
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> AddUser(User user)
+        {
+            try
+            {
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> EditUser(User editedUser)
+        {
+            try
+            {
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }
