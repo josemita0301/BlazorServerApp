@@ -66,13 +66,4 @@ Para mantener el código organizado y facilitar su mantenimiento, se ha decidido
             <li>Desde el directorio raíz, ejecute <code>dotnet run</code>.</li>
         </ul>
     </li>
-    <li><strong>Contribución</strong>:
-        <ul>
-            <li>Si desea contribuir, haga un fork de este repositorio y realice un pull request con sus cambios.</li>
-        </ul>
-    </li>
 </ol>
-
-<p>
-Espero que este documento le proporcione una visión clara del propósito y funcionamiento de la aplicación. Si tiene alguna pregunta o necesita asistencia, no dude en ponerse en contacto. ¡Gracias por su interés en BlazorServerAp!
-</p>
