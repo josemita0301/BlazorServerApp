@@ -64,6 +64,8 @@ Para mantener el código organizado y facilitar su mantenimiento, se ha decidido
 
 <h1>Descripción de la Arquitectura de Mi Proyecto</h1>
 
+<img src="https://github.com/josemita0301/BlazorServerApp/blob/0b32f32600716e1deb8c221d787b7a560efc26b3/Title%20Page.png" style = "align-center">
+
 <p>Estoy desarrollando una solución en .NET. Mi proyecto principal se construye con Blazor Server Side y se encarga de la capa de <strong>Presentación</strong>. Aquí gestiono la interacción del usuario con la interfaz, mostrando la información y capturando sus acciones. Aunque Blazor no sigue estrictamente el patrón MVC, he estructurado este proyecto de manera similar con componentes que actúan como vistas, lógica de componentes que funcionan como controladores y modelos de datos.</p>
 
 <h2>Lógica de Negocio</h2>
