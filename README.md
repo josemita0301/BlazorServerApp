@@ -1,5 +1,4 @@
 <h1>BlazorServerApp</h1>
-
 <h2>Framework</h2>
 
 <h3>Blazor Server-Side</h3>
@@ -44,8 +43,9 @@ La aplicación se integra con Firebase para manejar autenticación de usuarios y
 Para mantener el código organizado y facilitar su mantenimiento, se ha decidido utilizar el patrón arquitectónico Modelo-Vista-Controlador (MVC). Esto nos permite separar la lógica de negocio, la interfaz de usuario y el acceso a los datos.
 </p>
 
-<h2>Acquitectura</h2>
+<h2>Acquitectura del frameWork</h2>
 <h3>Introducción a Blazor y WebAssembly</h3>
+![Blazor Framework](https://github.com/josemita0301/BlazorServerApp/assets/105176075/47d0d3e3-7a2f-4a4c-bd13-c7258ab19a2c)
 
 <p>El marco de desarrollo web <strong>Blazor</strong>, desarrollado por Microsoft, ha generado un notable interés en la comunidad de desarrollo debido a su capacidad para permitir la construcción de aplicaciones web utilizando C# en lugar de JavaScript. La base de esta innovación se encuentra en la tecnología conocida como WebAssembly (WASM).</p>
 
@@ -61,3 +61,18 @@ Para mantener el código organizado y facilitar su mantenimiento, se ha decidido
     <li><strong>Blazor WebAssembly</strong>: La aplicación y sus dependencias se descargan y ejecutan en el navegador utilizando WebAssembly.</li>
     <li><strong>Blazor Server</strong>: El código C# se ejecuta en el servidor y solo los eventos y actualizaciones de la interfaz de usuario se transmiten al navegador mediante una conexión en tiempo real.</li>
 </ul>
+
+<h1>Descripción de la Arquitectura de Mi Proyecto</h1>
+
+<p>Estoy desarrollando una solución en .NET. Mi proyecto principal se construye con Blazor Server Side y se encarga de la capa de <strong>Presentación</strong>. Aquí gestiono la interacción del usuario con la interfaz, mostrando la información y capturando sus acciones. Aunque Blazor no sigue estrictamente el patrón MVC, he estructurado este proyecto de manera similar con componentes que actúan como vistas, lógica de componentes que funcionan como controladores y modelos de datos.</p>
+
+<h2>Lógica de Negocio</h2>
+<p>El núcleo de mi aplicación reside en el proyecto de <strong>Servicios</strong>, donde he encapsulado la lógica central como encriptación, helpers y requests a la API. Esta capa se encarga de las operaciones cruciales y de la lógica del negocio.</p>
+
+<p>Adicionalmente, para garantizar la seguridad de los usuarios, me conecto a una API de Google para autenticarlos. Esto garantiza que cada usuario es quien dice ser y me proporciona una capa adicional de seguridad.</p>
+
+<h2>Acceso a Datos</h2>
+<p>La persistencia de datos es manejada por Firebase. Gracias a un paquete NuGet en C#, puedo interactuar fácilmente con esta base de datos, realizando operaciones CRUD y gestionando la información de los usuarios y otros datos relevantes.</p>
+
+
+
