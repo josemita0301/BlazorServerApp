@@ -35,7 +35,7 @@ La aplicación es una red social destinada a eventos, celebraciones y días inte
 <h3>Firebase</h3>
 
 <p>
-La aplicación se integra con Firebase para manejar autenticación de usuarios, almacenamiento de imágenes y como base de datos para las publicaciones. Firebase proporciona soluciones escalables y en tiempo real para nuestras necesidades.
+La aplicación se integra con Firebase para manejar autenticación de usuarios y como base de datos para las publicaciones. Firebase proporciona soluciones escalables y en tiempo real para nuestras necesidades.
 </p>
 
 <h3>Modelo-Vista-Controlador (MVC)</h3>
@@ -44,26 +44,26 @@ La aplicación se integra con Firebase para manejar autenticación de usuarios, 
 Para mantener el código organizado y facilitar su mantenimiento, se ha decidido utilizar el patrón arquitectónico Modelo-Vista-Controlador (MVC). Esto nos permite separar la lógica de negocio, la interfaz de usuario y el acceso a los datos.
 </p>
 
-<h2>¿Cómo comenzar?</h2>
+<h2>Acquitectura</h2>
+<h3>Explicación del funcionamiento del framework</h3>
 
-<ol>
-    <li><strong>Instalación</strong>:
-        <ul>
-            <li>Asegúrese de tener instalado .NET Core SDK.</li>
-            <li>Clone este repositorio.</li>
-            <li>Ejecute <code>dotnet restore</code> para instalar las dependencias.</li>
-        </ul>
-    </li>
-    <li><strong>Configuración de Firebase</strong>:
-        <ul>
-            <li>Visite la consola de Firebase y cree un nuevo proyecto.</li>
-            <li>Configure las reglas de autenticación y base de datos según sus necesidades.</li>
-            <li>Integre las credenciales en la aplicación.</li>
-        </ul>
-    </li>
-    <li><strong>Ejecución</strong>:
-        <ul>
-            <li>Desde el directorio raíz, ejecute <code>dotnet run</code>.</li>
-        </ul>
-    </li>
-</ol>
+<p>Si has escuchado sobre <strong>Blazor</strong>, seguramente sabes que es una revolución en el desarrollo web. Pero, ¿cómo funciona realmente? Vamos a explorarlo.</p>
+
+<h4>1. WebAssembly (WASM)</h4>
+<p>Para comenzar, es esencial entender qué es <strong>WebAssembly</strong> o WASM. Piensa en él como un tipo especial de código que se ejecuta en tu navegador, casi tan rápido como el código nativo. Lo genial es que permite que código escrito en lenguajes como C/C++ o Rust se ejecute directamente en el navegador.</p>
+
+<h4>2. MonoWASM</h4>
+<p>Seguramente has oído hablar de .NET. Bueno, <strong>Mono</strong> es como un primo de .NET, y <strong>MonoWASM</strong> es una versión especial de Mono que se ejecuta en WebAssembly. En términos sencillos, actúa como una pequeña máquina virtual .NET, pero en tu navegador.</p>
+
+<h4>3. Blazor</h4>
+<p>Finalmente, llegamos a <strong>Blazor</strong>. Este genial framework te permite construir aplicaciones web con C#. Y gracias a MonoWASM, esas aplicaciones se ejecutan directamente en tu navegador. Imagina construir componentes web, similar a como lo harías con React o Angular, pero con C#. ¡Es impresionante!</p>
+
+<p>Y una cosa más: Blazor tiene dos sabores. Uno, llamado <strong>Blazor WebAssembly</strong>, ejecuta todo en el navegador. El otro, <strong>Blazor Server</strong>, ejecuta el código en el servidor, y solo envía los cambios y eventos de la interfaz al navegador.</p>
+
+<p>Así que, si eres un fanático de C# y quieres darle un giro a la programación web, ¡Blazor es el camino a seguir!</p>
+
+
+<h3>Aspectos generales de la arquitectura de la solución</h3>
+<p>
+La aplicación se integra con Firebase para manejar autenticación de usuarios, almacenamiento de imágenes y como base de datos para las publicaciones. Firebase proporciona soluciones escalables y en tiempo real para nuestras necesidades.
+</p>
