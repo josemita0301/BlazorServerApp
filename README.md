@@ -1,4 +1,4 @@
-<h1>BlazorServerAp</h1>
+<h1>BlazorServerApp</h1>
 
 <h2>Framework</h2>
 
@@ -45,25 +45,19 @@ Para mantener el código organizado y facilitar su mantenimiento, se ha decidido
 </p>
 
 <h2>Acquitectura</h2>
-<h3>Explicación del funcionamiento del framework</h3>
+<h3>Introducción a Blazor y WebAssembly</h3>
 
-<p>Si has escuchado sobre <strong>Blazor</strong>, seguramente sabes que es una revolución en el desarrollo web. Pero, ¿cómo funciona realmente? Vamos a explorarlo.</p>
+<p>El marco de desarrollo web <strong>Blazor</strong>, desarrollado por Microsoft, ha generado un notable interés en la comunidad de desarrollo debido a su capacidad para permitir la construcción de aplicaciones web utilizando C# en lugar de JavaScript. La base de esta innovación se encuentra en la tecnología conocida como WebAssembly (WASM).</p>
 
 <h4>1. WebAssembly (WASM)</h4>
-<p>Para comenzar, es esencial entender qué es <strong>WebAssembly</strong> o WASM. Piensa en él como un tipo especial de código que se ejecuta en tu navegador, casi tan rápido como el código nativo. Lo genial es que permite que código escrito en lenguajes como C/C++ o Rust se ejecute directamente en el navegador.</p>
+<p><strong>WebAssembly</strong> es un formato de código binario diseñado para ser un objetivo de compilación eficiente para lenguajes de alto nivel como C/C++ y Rust. Esta tecnología permite que el código se ejecute en navegadores a velocidades cercanas al rendimiento nativo.</p>
 
 <h4>2. MonoWASM</h4>
-<p>Seguramente has oído hablar de .NET. Bueno, <strong>Mono</strong> es como un primo de .NET, y <strong>MonoWASM</strong> es una versión especial de Mono que se ejecuta en WebAssembly. En términos sencillos, actúa como una pequeña máquina virtual .NET, pero en tu navegador.</p>
+<p>El proyecto <strong>Mono</strong> representa una implementación de código abierto del marco .NET. <strong>MonoWASM</strong> es una versión adaptada de Mono diseñada para ejecutarse sobre WebAssembly. Esencialmente, actúa como un intérprete de .NET dentro del contexto del navegador, facilitando la ejecución del código C#.</p>
 
 <h4>3. Blazor</h4>
-<p>Finalmente, llegamos a <strong>Blazor</strong>. Este genial framework te permite construir aplicaciones web con C#. Y gracias a MonoWASM, esas aplicaciones se ejecutan directamente en tu navegador. Imagina construir componentes web, similar a como lo harías con React o Angular, pero con C#. ¡Es impresionante!</p>
-
-<p>Y una cosa más: Blazor tiene dos sabores. Uno, llamado <strong>Blazor WebAssembly</strong>, ejecuta todo en el navegador. El otro, <strong>Blazor Server</strong>, ejecuta el código en el servidor, y solo envía los cambios y eventos de la interfaz al navegador.</p>
-
-<p>Así que, si eres un fanático de C# y quieres darle un giro a la programación web, ¡Blazor es el camino a seguir!</p>
-
-
-<h3>Aspectos generales de la arquitectura de la solución</h3>
-<p>
-La aplicación se integra con Firebase para manejar autenticación de usuarios, almacenamiento de imágenes y como base de datos para las publicaciones. Firebase proporciona soluciones escalables y en tiempo real para nuestras necesidades.
-</p>
+<p><strong>Blazor</strong> aprovecha las capacidades de MonoWASM y WASM para ejecutar aplicaciones web escritas en C#. Las aplicaciones se construyen utilizando un modelo de componentes, similar a frameworks modernos como React o Angular. Blazor se presenta en dos variantes principales:</p>
+<ul>
+    <li><strong>Blazor WebAssembly</strong>: La aplicación y sus dependencias se descargan y ejecutan en el navegador utilizando WebAssembly.</li>
+    <li><strong>Blazor Server</strong>: El código C# se ejecuta en el servidor y solo los eventos y actualizaciones de la interfaz de usuario se transmiten al navegador mediante una conexión en tiempo real.</li>
+</ul>
