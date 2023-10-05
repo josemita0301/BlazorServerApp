@@ -45,7 +45,7 @@ Para mantener el código organizado y facilitar su mantenimiento, se ha decidido
 
 <h2>Acquitectura del frameWork</h2>
 <h3>Introducción a Blazor y WebAssembly</h3>
-![Blazor Framework](https://github.com/josemita0301/BlazorServerApp/assets/105176075/47d0d3e3-7a2f-4a4c-bd13-c7258ab19a2c)
+<img src="https://github.com/josemita0301/BlazorServerApp/blob/9faf3953afbc287ed4351f76ebf1c20dab74e24a/Blazor%20Framework.png" style = "align-center">
 
 <p>El marco de desarrollo web <strong>Blazor</strong>, desarrollado por Microsoft, ha generado un notable interés en la comunidad de desarrollo debido a su capacidad para permitir la construcción de aplicaciones web utilizando C# en lugar de JavaScript. La base de esta innovación se encuentra en la tecnología conocida como WebAssembly (WASM).</p>
 
