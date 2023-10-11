@@ -1,41 +1,53 @@
-﻿using BlazorServerApp.Models;
+﻿using BlazorServerApp.Authentication;
+using BlazorServerApp.Models;
+using BlazorServerApp.Pages.User;
+using BlazorServerAppServices.Helpers;
+using Firebase.Auth;
 using Google.Cloud.Firestore;
 using Google.Protobuf.WellKnownTypes;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Text;
+using User = BlazorServerApp.Models.User;
 
 namespace BlazorServerApp.Controllers
-{
+{  
     public class UserController
     {
         private FirestoreDb firestoreDb;
 
+        AuthenticationStateProvider authState;
         public UserController()
         {
             firestoreDb = FirestoreDb.Create("blazorserverdb");
         }
 
+        #region CRUD User
         public async Task<bool> CreateUser(User newUser)
         {
             try
             {
+                string saltCreate = DateTime.Now.ToString();
+
                 CollectionReference usersRef = firestoreDb.Collection("User");
 
                 Dictionary<string, object> userDict = new Dictionary<string, object>
                 {
                     { "age", newUser.Age },
                     { "name", newUser.Name },
-                    { "password", newUser.Password },
+                    { "password", Hashing.HashPassword($"{newUser.Password}{saltCreate}")},
                     { "username", newUser.Username },
-                    { "email", newUser.Email }
+                    { "email", newUser.Email },
+                    { "salt", saltCreate}
                 };
 
                 await usersRef.AddAsync(userDict);
 
-                return true;  
+                return true;
             }
             catch (Exception ex)
             {
@@ -54,15 +66,19 @@ namespace BlazorServerApp.Controllers
 
             try
             {
+
+                string saltEdit = DateTime.Now.ToString();
+
                 DocumentReference userRef = firestoreDb.Collection("User").Document(userToUpdate.UserId);
 
                 Dictionary<string, object> updates = new Dictionary<string, object>
                 {
                     { "age", userToUpdate.Age },
                     { "name", userToUpdate.Name },
-                    { "password", userToUpdate.Password },
+                    { "password", Hashing.HashPassword($"{userToUpdate.Password}{saltEdit}")},
                     { "username", userToUpdate.Username },
-                    { "email", userToUpdate.Email }
+                    { "email", userToUpdate.Email },
+                    { "salt", saltEdit }
                 };
 
                 await userRef.UpdateAsync(updates);
@@ -150,5 +166,61 @@ namespace BlazorServerApp.Controllers
                 return false;
             }
         }
+
+        #endregion
+
+        #region Login
+
+        public async Task<bool> LoginUser(UserToLogin userToLogin, CustomAuthenticationStateProvider customAuthStateProvider)
+        {
+            try
+            {
+                // Consulta para el correo
+                Query emailQuery = firestoreDb.Collection("User").WhereEqualTo("email", userToLogin.Email);
+                QuerySnapshot emailQuerySnapshot = await emailQuery.GetSnapshotAsync();
+
+                // Consulta para el nombre de usuario
+                Query usernameQuery = firestoreDb.Collection("User").WhereEqualTo("username", userToLogin.Email);
+                QuerySnapshot usernameQuerySnapshot = await usernameQuery.GetSnapshotAsync();
+
+                DocumentSnapshot userDocument = null;
+
+                if (emailQuerySnapshot.Documents.Count > 0)
+                {
+                    userDocument = emailQuerySnapshot.Documents[0];
+                }
+                else if (usernameQuerySnapshot.Documents.Count > 0)
+                {
+                    userDocument = usernameQuerySnapshot.Documents[0];
+                }
+
+                if (userDocument != null)
+                {
+                    Dictionary<string, object> userData = userDocument.ToDictionary();
+                    string json = JsonConvert.SerializeObject(userData);
+
+                    User userFromDb = JsonConvert.DeserializeObject<User>(json);
+                    userFromDb.UserId = userDocument.Id;
+
+                    if(Hashing.HashPassword($"{userToLogin.Password}{userFromDb.Salt}") == userFromDb.Password)
+                    {
+                        await customAuthStateProvider.UpdateAuthenticationState(userToLogin);
+                        return true;
+                    }
+                    else 
+                        return false;
+                }
+                else
+                {
+                    return false; // No se encontró el usuario con ese correo o nombre de usuario
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al crear el usuario: {ex.Message}");
+                return false;
+            }
+        }
+        #endregion
     }
 }

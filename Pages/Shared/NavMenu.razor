@@ -1,0 +1,84 @@
+﻿@using BlazorServerApp.Authentication;
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Aplicación deber</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<AuthorizeView>
+    <Authorized>
+        <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+            <nav class="flex-column">
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </div>
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/users">
+                        <span class="oi oi-list" aria-hidden="true"></span> Lista de Usuarios
+                    </NavLink>
+                </div>
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" @onclick="CloseSession">
+                        <span class="oi oi-account-logout" aria-hidden="true"></span> Cerrar Sesión
+                    </NavLink>
+                </div>
+            </nav>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+            <nav class="flex-column">
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="login">
+                        <span class="oi oi-account-login" aria-hidden="true"></span> Iniciar Sesión
+                    </NavLink>
+                </div>
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/register" @onclick="ReloadComponent">
+                        <span class="oi oi-plus" aria-hidden="true"></span> Registrar Usuario
+                    </NavLink>
+                </div>
+            </nav>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+z
+@code {
+
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task ReloadComponent()
+    {
+        navManager.NavigateTo("register", true);
+    }
+
+    private async Task CloseSession()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(null);
+
+        navManager.NavigateTo("/", true);
+    }
+}

@@ -63,6 +63,9 @@
     private async void DeleteUser(User user)
     {
         await userController.DeleteUser(user.UserId);
+        
+        NavManager.NavigateTo("/users", true);
+
         ToastService.ShowWarning("Se ha borrado el usuario");
     }
     #endregion

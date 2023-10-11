@@ -6,15 +6,21 @@ namespace BlazorServerApp.Models
     {
         public User(){ }
 
-        public User(int age, string name, string password, string username, string email)
+        public User(string role, int age, string name, string password, string username, string email, string salt)
         {
             Age = age;
+            Role = role;
             Name = name;
             Password = password;
             Username = username;
             Email = email;
+            Salt = salt;
         }
         public string UserId { get; set; }
+
+        [FirestoreProperty]
+        public string Role { get; set; }
+
 
         [FirestoreProperty]
         public int Age { get; set; }
@@ -30,6 +36,11 @@ namespace BlazorServerApp.Models
 
         [FirestoreProperty]
         public string Email { get; set; }
+
+        [FirestoreProperty]
+        public string Salt { get; set; }
+
+        public string Observation { get; set; }
 
     }
 }

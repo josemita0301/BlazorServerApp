@@ -1,20 +1,76 @@
 ﻿@page "/login"
+@using BlazorServerApp.Authentication;
+@using BlazorServerAppServices.Helpers
+@using BlazorServerApp.Controllers
+@using BlazorServerApp.Models
 
 <div class="login-container">
     <div class="login-card">
         <h2>Iniciar Sesión</h2>
+        <SpinLoader IsLoading="isLoading" Center="true" Color="#d1c7e9" ></SpinLoader>
         <div class="login-form">
-            <label for="email">Correo Electrónico:</label>
-            <input id="email" type="email" placeholder="ejemplo@correo.com" />
+            <label for="email">Correo Electrónico/ Usuario:</label>
+            <input @bind="userToLogin.Email" type="email" placeholder="ejemplo@correo.com" />
 
             <label for="password">Contraseña:</label>
-            <input id="password" type="password" placeholder="Contraseña" />
+            <input @bind="userToLogin.Password" type="password" placeholder="Contraseña" />
 
-            <button class="login-btn">Ingresar</button>
+            <button class="login-btn" @onclick="LoginUserToApp">Ingresar</button>
+
+            <div class="login-actions">
+                <a href="@UrlHelper.GoToRegister()">Registrarse</a>
+                <span>|</span>
+                <a href="@UrlHelper.GoToResetPassword()">Restablecer contraseña</a>
+            </div>
         </div>
     </div>
 </div>
 
-@code{
+@code {
+    @inject AuthenticationStateProvider authState
+    @inject NavigationManager NavManager
+    @inject IToastService ToastService
 
+    public bool isLoading = false;
+
+    //FormInformation
+    private int attempts = 3;
+    public UserToLogin userToLogin { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        userToLogin = new UserToLogin();
+        userToLogin.Email = "";
+        userToLogin.Password = "";
+    }
+
+    public async void LoginUserToApp()
+    {
+        isLoading = true;
+        if(attempts != 1)
+        {
+            UserController userController = new UserController();
+            if (await userController.LoginUser(userToLogin, (CustomAuthenticationStateProvider)authState))
+            {
+                isLoading = false;
+
+                NavManager.NavigateTo("/", true);
+            }
+            else
+            {
+                ToastService.ShowError($"Credenciales invalidas, quedan {attempts} intentos");
+                userToLogin.Password = "";
+                attempts--;
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            isLoading = false;
+            NavManager.NavigateTo($"/resetPassword/{userToLogin.Email}");
+        }
+    }
 }
+
+
+

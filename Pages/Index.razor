@@ -1,14 +1,23 @@
 ﻿@page "/"
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Index</PageTitle>
 
-<h1>Ingeniería Web!</h1>
+<AuthorizeView>
+    <Authorized>
+        <h1>Si ve este mensaje significa que esta autenticado</h1>
+    </Authorized>
+    <NotAuthorized>
+        <h1>Ingeniería Web!</h1>
 
-<h6>
-    En esta aplicación se estará realizando un CRUD básico a una tabla de usuario.
-</h6>
+        <h6>
+            En esta aplicación se estará realizando un CRUD básico a una tabla de usuario.
+        </h6>
 
-<h6>
-    Para este proyecto se ha usado Blazor con un patrón MVC y una base de datos en la nube llamada Firebase.
-</h6>
+        <h6>
+            Para este proyecto se ha usado Blazor con un patrón MVC y una base de datos en la nube llamada Firebase.
+        </h6>
+    </NotAuthorized>
+</AuthorizeView>
+
 
