@@ -84,7 +84,7 @@ Para mantener el código organizado y facilitar su mantenimiento, se ha decidido
 
 
 <h2>Explicaciôn del diagrama del login (Diagrama de actividades)</h2>
-<img src="https://github.com/josemita0301/BlazorServerApp/blob/0b32f32600716e1deb8c221d787b7a560efc26b3/Title%20Page.png" style = "align-center">
+<img src="diagramaLogin.jpeg" style = "align-center">
 
 
 <h2>Explicaciôn del diagrama del login (Diagrama de actividades)</h2>
@@ -108,5 +108,3 @@ Credenciales Incorrectas: Si las credenciales no son correctas, se muestra un me
 
 Fin del Programa: El proceso concluye, ya sea con el acceso al sistema o con un mensaje de error.
 </p>
-
-<img src="https://github.com/josemita0301/BlazorServerApp/blob/0b32f32600716e1deb8c221d787b7a560efc26b3/Title%20Page.png" style = "align-center">
