@@ -6,37 +6,44 @@
 @inject NavigationManager NavManager
 @inject IToastService ToastService
 
-<h2>Lista de Usuarios</h2>
+<AuthorizeView>
+    <Authorized>
+        <h2>Lista de Usuarios</h2>
 
-<table class="users-table">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Edad</th>
-            <th>Editar</th> 
-            <th>Borrar</th> 
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in users)
-        {
-            <tr>
-                <td>@user.Name</td>
-                <td>@user.Username</td>
-                <td>@user.Email</td>
-                <td>@user.Age</td>
-                <td>
-                    <button class="edit-button" @onclick="(() => EditUser(user))">Editar</button>
-                </td>
-                <td>
-                    <button class="delete-button" @onclick="(() => DeleteUser(user))">Borrar</button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Edad</th>
+                    <th>Editar</th>
+                    <th>Borrar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in users)
+                {
+                    <tr>
+                        <td>@user.Name</td>
+                        <td>@user.Username</td>
+                        <td>@user.Email</td>
+                        <td>@user.Age</td>
+                        <td>
+                            <button class="edit-button" @onclick="(() => EditUser(user))">Editar</button>
+                        </td>
+                        <td>
+                            <button class="delete-button" @onclick="(() => DeleteUser(user))">Borrar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </Authorized>
+    <NotAuthorized>
+
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
 
