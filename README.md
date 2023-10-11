@@ -76,5 +76,38 @@ Para mantener el código organizado y facilitar su mantenimiento, se ha decidido
 <h2>Acceso a Datos</h2>
 <p>La persistencia de datos es manejada por Firebase. Gracias a un paquete NuGet en C#, puedo interactuar fácilmente con esta base de datos, realizando operaciones CRUD y gestionando la información de los usuarios y otros datos relevantes.</p>
 
+<h1>Login</h1>
+<p>En este caso el login lo hemos realizaod con identity al importando el paquete NuGET de Identity y despues añadiendolo a las dependencias del program.cs. Despues de tener esa dependencia lo que debemos de hacer es crear un AuthenticationProvider perosnalizado para que podamos estbalecer nosotros mismos los claims o datos que queremos que se guarden del usuario. Esto es util ya que podriamos por ejemplo asignar roles. Finalmente mediante los componentes de authorizationviews en las vistas injectamos la dependencia del AuthenticationStatePorvider personalizado y mediante AuthorizationViews podemos escoger que es lo que ve el usuario autenticado o que ha iniciado sesion y lo que no puede ser el usuario que no ha iniciado sesiòn</p>
+
+<h1>Diagrama del login</h1>
+<p>En este caso el login lo hemos realizaod con identity al importando el paquete NuGET de Identity y despues añadiendolo a las dependencias del program.cs. Despues de tener esa dependencia lo que debemos de hacer es crear un AuthenticationProvider perosnalizado para que podamos estbalecer nosotros mismos los claims o datos que queremos que se guarden del usuario. Esto es util ya que podriamos por ejemplo asignar roles. Finalmente mediante los componentes de authorizationviews en las vistas injectamos la dependencia del AuthenticationStatePorvider personalizado y mediante AuthorizationViews podemos escoger que es lo que ve el usuario autenticado o que ha iniciado sesion y lo que no puede ser el usuario que no ha iniciado sesiòn</p>
 
 
+<h2>Explicaciôn del diagrama del login</h2>
+<img src="https://github.com/josemita0301/BlazorServerApp/blob/0b32f32600716e1deb8c221d787b7a560efc26b3/Title%20Page.png" style = "align-center">
+
+
+<h2>Explicaciôn del diagrama del login</h2>
+<p>EN cuanto a la explicación detallada del diagrama de actividad:
+
+Inicio del Programa: El proceso comienza cuando un usuario intenta iniciar sesión en el sistema.
+
+Validación de Credenciales: Se realiza una verificación para determinar si el usuario proporcionó credenciales válidas. Esto podría incluir un nombre de usuario y una contraseña.
+
+Llamada al Método LoginUser en UserController: Si las credenciales son válidas, se llama al método LoginUser en la clase UserController. Este método se encarga de la lógica de autenticación.
+
+Verificación de Credenciales en la Base de Datos: El método LoginUser en UserController realiza la verificación de las credenciales en la base de datos.
+
+Credenciales Correctas: Si las credenciales son correctas, se procede a actualizar el estado de autenticación llamando al método UpdateAuthenticationState en la clase CustomAuthenticationStateProvider.
+
+Almacenamiento de Información del Usuario en la Sesión: Se almacena la información del usuario en la sesión. En este caso, el método SetAsync en _sessionStorage se utiliza para almacenar información del usuario.
+
+Permitir el Acceso al Sistema: Con las credenciales verificadas y la sesión actualizada, se permite el acceso al sistema.
+
+Credenciales Incorrectas: Si las credenciales no son correctas, se muestra un mensaje de error al usuario. Este flujo puede incluir otras actividades, como bloquear la cuenta después de varios intentos fallidos, dependiendo de los requisitos de seguridad.
+
+Fin del Programa: El proceso concluye, ya sea con el acceso al sistema o con un mensaje de error.
+
+Es importante tener en cuenta que este diagrama es una representación simplificada y puede necesitar adaptaciones según los detalles específicos de tu sistema. Además, algunos detalles específicos de implementación pueden variar según las bibliotecas o herramientas utilizadas en tu código.</p>
+
+<img src="https://github.com/josemita0301/BlazorServerApp/blob/0b32f32600716e1deb8c221d787b7a560efc26b3/Title%20Page.png" style = "align-center">
