@@ -2,7 +2,9 @@
 
 @using BlazorServerApp.Models
 @using BlazorServerApp.Controllers
+@using System.Security.Claims;
 
+@inject AuthenticationStateProvider CustomAuthStateProvider
 @inject NavigationManager NavManager
 @inject IToastService ToastService
 
@@ -54,11 +56,18 @@
     public UserController userController = new UserController();
     #endregion
 
-
     #region Events
 
     protected override async Task OnInitializedAsync()
     {
+        var authState = await CustomAuthStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.Identity.IsAuthenticated)
+        {
+            NavManager.NavigateTo("/login");
+            return;
+        }
+
+
         users = await userController.GetAllUsers();
     }
 
