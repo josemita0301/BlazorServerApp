@@ -1,4 +1,5 @@
 ﻿using Google.Cloud.Firestore;
+using System.Globalization;
 
 namespace BlazorServerApp.Models
 {
@@ -24,7 +25,7 @@ namespace BlazorServerApp.Models
 
         public DateTime FechaToDateTime()
         {
-            return DateTime.Parse(this.fecha);
+            return DateTime.ParseExact(this.fecha, "M/d/yyyy", CultureInfo.InvariantCulture);
         }
     }
 }
