@@ -4,6 +4,7 @@
 @using BlazorServerApp.Controllers
 @using System.Security.Claims;
 @using System.Linq;
+@using System.Globalization;
 
 @inject AuthenticationStateProvider CustomAuthStateProvider
 @inject NavigationManager NavManager
@@ -98,8 +99,8 @@
     private async Task CalcularSumaPorVendedor()
     {
         var ventasFiltradas = ventas
-            .Where(v => v.FechaToDateTime() >= fechaInicio && v.FechaToDateTime() <= fechaFin)
-            .ToList();
+            .Where(v => v.FechaToDateTime() >= (DateTime.ParseExact(fechaInicio.ToShortDateString(), "dd/MM/yyyy", CultureInfo.InvariantCulture)) && v.FechaToDateTime() <= (DateTime.ParseExact(fechaFin.ToShortDateString(), "dd/MM/yyyy", CultureInfo.InvariantCulture)))
+        .ToList();
 
         sumaPorVendedor = ventasFiltradas
             .GroupBy(v => v.Vendedor.Name)
