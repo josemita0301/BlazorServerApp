@@ -20,7 +20,6 @@ namespace BlazorServerApp.Controllers
     {
         private FirestoreDb firestoreDb;
 
-        AuthenticationStateProvider authState;
         public UserController()
         {
             firestoreDb = FirestoreDb.Create("blazorserverdb");

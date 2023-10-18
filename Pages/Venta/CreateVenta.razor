@@ -1,0 +1,68 @@
+﻿@page "/createVenta"
+
+@using BlazorServerApp.Controllers;
+@using BlazorServerApp.Models;
+
+@inject NavigationManager NavManager
+@inject IToastService ToastService
+
+<div class="container">
+    <h2 class="title">@PageHeader</h2>
+
+    <select @bind="venta.idUser">
+        @foreach (var user in users)
+        {
+            <option value="@user.UserId">@user.Name</option>
+        }
+    </select>
+
+    <select @bind="venta.producto">
+        <option value="Prod1">Producto 1</option>
+        <option value="Prod2">Producto 2</option>
+        <option value="Prod3">Producto 3</option>
+    </select>
+
+    <input @bind="selectedDate" type="date" />
+
+    <input @bind="venta.cuotaMonto" type="number" placeholder="Edad" />
+
+    <button @onclick="CreateNewVenta">@SubmitButtonText</button>
+</div>
+
+@code {
+    public string PageHeader = "Crear Venta";
+    public string SubmitButtonText = "Crear...";
+
+    private DateTime selectedDate;
+
+    private Venta venta = new Venta();
+    private List<User> users = new List<User>();
+
+    private UserController userController = new UserController();
+    private VentaController ventaController = new VentaController();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await userController.GetAllUsers();
+
+        if (users.Count == 0)
+        {
+            NavManager.NavigateTo("/createVenta", true);
+        }
+    }
+
+    private async void CreateNewVenta()
+    {
+        venta.fecha = selectedDate.ToString("dd/MM/yyyy");
+
+        var result = await ventaController.CreateVenta(venta);
+
+        if (result)
+            ToastService.ShowSuccess("Venta creada con éxito");
+        else
+            ToastService.ShowError("Error al crear la venta");
+
+        NavManager.NavigateTo("/ventas");
+    }
+}

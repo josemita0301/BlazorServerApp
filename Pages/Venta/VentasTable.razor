@@ -1,0 +1,109 @@
+﻿@page "/ventas"
+
+@using BlazorServerApp.Models
+@using BlazorServerApp.Controllers
+@using System.Security.Claims;
+@using System.Linq;
+
+@inject AuthenticationStateProvider CustomAuthStateProvider
+@inject NavigationManager NavManager
+@inject IToastService ToastService
+
+<AuthorizeView>
+    <Authorized>
+        <h2>Lista de Ventas</h2>
+
+        <table class="ventas-table">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>IdVenta</th>
+                    <th>Vendedor</th>
+                    <th>Producto</th>
+                    <th>Cuota Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var venta in ventas)
+                {
+                    <tr>
+                        <td>@venta.fecha</td>
+                        <td>@venta.VentaId</td>
+                        <td>@venta.Vendedor.Name</td>
+                        <td>@venta.producto</td>
+                        <td>@venta.cuotaMonto</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h3>Filtrar por fechas</h3>
+        Desde: <input type="date" @bind="fechaInicio"/>
+        Hasta: <input type="date" @bind="fechaFin"/>
+
+        <button @onclick="CalcularSumaPorVendedor">Calcular</button>
+
+        @if (sumaPorVendedor != null)
+        {
+            <h3>Resumen de Ventas por Vendedor</h3>
+
+            <table class="ventas-table">
+                <thead>
+                    <tr>
+                        <th>Vendedor</th>
+                        <th>Suma de Cuota Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in sumaPorVendedor)
+                    {
+                        <tr>
+                            <td>@item.Key</td>
+                            <td>@item.Value</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </Authorized>
+</AuthorizeView>
+
+@code {
+
+    #region Ventas properties Vars n Props
+
+    private List<Venta> ventas = new List<Venta>();
+    public VentaController ventaController = new VentaController();
+
+    private DateTime fechaInicio { get; set; } = DateTime.Now.AddMonths(-1);
+    private DateTime fechaFin { get; set; } = DateTime.Now;
+
+    private Dictionary<string, decimal> sumaPorVendedor;
+    #endregion
+
+    #region Events
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await CustomAuthStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.Identity.IsAuthenticated)
+        {
+            NavManager.NavigateTo("/login");
+            return;
+        }
+
+        ventas = await ventaController.GetAllVentas();
+    }
+
+    private async Task CalcularSumaPorVendedor()
+    {
+        var ventasFiltradas = ventas
+            .Where(v => v.FechaToDateTime() >= fechaInicio && v.FechaToDateTime() <= fechaFin)
+            .ToList();
+
+        sumaPorVendedor = ventasFiltradas
+            .GroupBy(v => v.Vendedor.Name)
+            .ToDictionary(grupo => grupo.Key, grupo => grupo.Sum(v => v.cuotaMonto));
+    }
+    #endregion
+}
