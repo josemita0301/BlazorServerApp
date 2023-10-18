@@ -99,7 +99,7 @@
     private async Task CalcularSumaPorVendedor()
     {
         var ventasFiltradas = ventas
-            .Where(v => v.FechaToDateTime() >= (DateTime.ParseExact(fechaInicio.ToShortDateString(), "dd/MM/yyyy", CultureInfo.InvariantCulture)) && v.FechaToDateTime() <= (DateTime.ParseExact(fechaFin.ToShortDateString(), "dd/MM/yyyy", CultureInfo.InvariantCulture)))
+            .Where(v => v.FechaToDateTime() >= (DateTime.ParseExact(fechaInicio.ToShortDateString(), "d/M/yyyy", CultureInfo.InvariantCulture)) && v.FechaToDateTime() <= (DateTime.ParseExact(fechaFin.ToShortDateString(), "d/M/yyyy", CultureInfo.InvariantCulture)))
         .ToList();
 
         sumaPorVendedor = ventasFiltradas

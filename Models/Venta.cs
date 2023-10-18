@@ -25,7 +25,7 @@ namespace BlazorServerApp.Models
 
         public DateTime FechaToDateTime()
         {
-            return DateTime.ParseExact(this.fecha, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(this.fecha, "d/M/yyyy", CultureInfo.InvariantCulture);
         }
     }
 }
