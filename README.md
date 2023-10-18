@@ -111,6 +111,9 @@ Fin del Programa: El proceso concluye, ya sea con el acceso al sistema o con un 
 
 
 <h2>Ejercicio MVC Resueltoi por el MiniCore</h2>
+
+<img src="Imagen Arquittectura del Sistema.png" style = "align-center">
+
 <p>
     Bueno, para este punto, ya se puede hablar de la arquitectura del sistema desde una perspectiva más amplia. Lo que se puede apreciar en el diagrama de arquitectura es la función que cumple cada componente del sistema, partiendo desde el usuario. En este caso, el usuario ya puede acceder a la web ya que esta cuenta con su propio dominio. A su vez, el dominio y todo lo que ve el usuario está hospedado en Azure. Es importante también mencionar qué tipo de servicios se está usando. Azure, en este caso (nuestro host), se trata de una PaaS (Plataforma como Servicio) ya que lo único de lo que debemos preocuparnos es de que nuestra aplicación se vea bien y funcione correctamente. Este tipo de servicios se encarga de gestionar todo el ambiente de red, seguridad, conectividad y compatibilidad de los componentes de nuestro proyecto. Es por ello que esta es una de las mejores opciones para este tipo de proyecto, ya que en la etapa en la que se encuentra no posee usuarios suficientes como para requerir escalamiento. Además, otro servicio al que está conectado es al de la nube de Google, que en este caso nos provee de una base de datos documental. Debido a que este framework soporta operaciones pesadas dentro de su Core, podemos sacar mucho provecho a la conexión directa con esta base de datos.
 
@@ -118,6 +121,8 @@ Fin del Programa: El proceso concluye, ya sea con el acceso al sistema o con un 
 
 <p>
     <h2>Diagrama de Componentes del Sistema MVC con Firestore</h2>
+
+<img src="ImgComponentes.png" style = "align-center">
 
 <p>La aplicación se desarrolla bajo el patrón Modelo-Vista-Controlador (MVC), y el siguiente es un desglose detallado de cómo funcionan juntos los componentes principales:</p>
 
