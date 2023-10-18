@@ -32,4 +32,10 @@
     <ProjectReference Include="..\BlazorServerAppServices\BlazorServerAppServices.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Config\blazorserverdb-firebase-adminsdk-d6ztc-72ee8cbfb5.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
