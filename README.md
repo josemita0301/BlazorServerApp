@@ -108,3 +108,52 @@ Credenciales Incorrectas: Si las credenciales no son correctas, se muestra un me
 
 Fin del Programa: El proceso concluye, ya sea con el acceso al sistema o con un mensaje de error.
 </p>
+
+
+<h2>Ejercicio MVC Resueltoi por el MiniCore</h2>
+
+<img src="Imagen Arquittectura del Sistema.png" style = "align-center">
+
+<p>
+    Bueno, para este punto, ya se puede hablar de la arquitectura del sistema desde una perspectiva más amplia. Lo que se puede apreciar en el diagrama de arquitectura es la función que cumple cada componente del sistema, partiendo desde el usuario. En este caso, el usuario ya puede acceder a la web ya que esta cuenta con su propio dominio. A su vez, el dominio y todo lo que ve el usuario está hospedado en Azure. Es importante también mencionar qué tipo de servicios se está usando. Azure, en este caso (nuestro host), se trata de una PaaS (Plataforma como Servicio) ya que lo único de lo que debemos preocuparnos es de que nuestra aplicación se vea bien y funcione correctamente. Este tipo de servicios se encarga de gestionar todo el ambiente de red, seguridad, conectividad y compatibilidad de los componentes de nuestro proyecto. Es por ello que esta es una de las mejores opciones para este tipo de proyecto, ya que en la etapa en la que se encuentra no posee usuarios suficientes como para requerir escalamiento. Además, otro servicio al que está conectado es al de la nube de Google, que en este caso nos provee de una base de datos documental. Debido a que este framework soporta operaciones pesadas dentro de su Core, podemos sacar mucho provecho a la conexión directa con esta base de datos.
+
+</p>
+
+<p>
+    <h2>Diagrama de Componentes del Sistema MVC con Firestore</h2>
+
+<img src="ImgComponentes.png" style = "align-center">
+
+<p>La aplicación se desarrolla bajo el patrón Modelo-Vista-Controlador (MVC), y el siguiente es un desglose detallado de cómo funcionan juntos los componentes principales:</p>
+
+<ul>
+    <li>
+        <strong>Usuario:</strong>
+        <p>Representa al individuo que interactúa con la aplicación web. El usuario accede a la interfaz proporcionada por la vista y realiza diversas acciones, como consultar ventas.</p>
+    </li>
+    <li>
+        <strong>Vista - /ventas:</strong>
+        <p>Es la interfaz gráfica que se muestra al usuario. En este caso, la vista "/ventas" muestra una lista de ventas y permite filtrarlas por fecha. La vista es responsable de recopilar la interacción del usuario y solicitar datos al controlador.</p>
+    </li>
+    <li>
+        <strong>Controlador - VentaController:</strong>
+        <p>El controlador gestiona las solicitudes provenientes de la vista. Interpreta las acciones del usuario, interactúa con los modelos y la base de datos, y proporciona los datos necesarios de vuelta a la vista. En este sistema, el controlador "VentaController" tiene métodos para crear ventas y obtener todas las ventas, entre otros.</p>
+    </li>
+    <li>
+        <strong>Modelo - User:</strong>
+        <p>El modelo "User" representa la estructura de datos de un usuario o vendedor. Contiene propiedades como edad, nombre, contraseña, entre otros. Este modelo es esencial para comprender y estructurar la información del usuario en la base de datos y dentro de la aplicación.</p>
+    </li>
+    <li>
+        <strong>Modelo - Venta:</strong>
+        <p>El modelo "Venta" representa la estructura de datos de una venta. Tiene propiedades como fecha, ID del usuario (vendedor), producto y monto de cuota. Asimismo, se relaciona con el modelo "User" a través de la propiedad "Vendedor".</p>
+    </li>
+    <li>
+        <strong>Firestore - Base de Datos:</strong>
+        <p>Representa la solución de base de datos utilizada, que en este caso es Firestore de Google Cloud. Aquí se almacenan y consultan todos los datos de la aplicación. El controlador interactúa directamente con Firestore para guardar y recuperar información, utilizando el SDK proporcionado por Google.</p>
+    </li>
+</ul>
+
+<p>Esta estructura permite una separación de responsabilidades, facilitando el mantenimiento, escalabilidad y modificación del sistema en el futuro.</p>
+
+</p>
+
