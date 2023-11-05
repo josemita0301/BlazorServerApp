@@ -21,15 +21,25 @@ main {
     align-items: center;
 }
 
-    .top-row ::deep a, .top-row .btn-link {
+    .top-row .top-row-link {
         white-space: nowrap;
         margin-left: 1.5rem;
+        color: #333;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        display: flex;
+        align-items: center;
     }
 
-    .top-row a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+        .top-row .top-row-link i {
+            margin-right: 0.5rem;
+        }
+
+        .top-row .top-row-link:hover,
+        .top-row .top-row-link:focus {
+            color: #007bff;
+            cursor: pointer;
+        }
 
 @media (max-width: 640.98px) {
     .top-row:not(.auth) {
@@ -40,7 +50,7 @@ main {
         justify-content: space-between;
     }
 
-    .top-row a, .top-row .btn-link {
+    .top-row .top-row-link {
         margin-left: 0;
     }
 }

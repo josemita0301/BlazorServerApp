@@ -1,4 +1,5 @@
-﻿using Google.Cloud.Firestore;
+﻿using BlazorServerApp.Models.Users;
+using Google.Cloud.Firestore;
 using System.Globalization;
 
 namespace BlazorServerApp.Models

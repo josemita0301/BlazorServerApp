@@ -1,7 +1,5 @@
 using Blazored.Toast;
 using BlazorServerApp.Authentication;
-using BlazorServerAppServices.Http;
-using BlazorServerAppServices.Services;
 using Google.Api;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
@@ -30,15 +28,6 @@ builder.Services.AddBlazoredToast();
 builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
-builder.Services.AddRefitClient<IFirebaseRegisterService>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(identityToolkitBaseUrl))
-    .AddHttpMessageHandler<FirebaseApiKeyHttpMessageHandler>();
-builder.Services.AddRefitClient<IFirebaseLoginService>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(identityToolkitBaseUrl))
-    .AddHttpMessageHandler<FirebaseApiKeyHttpMessageHandler>();
-builder.Services.AddRefitClient<IFirebaseRefreshService>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(identityToolkitBaseUrl))
-    .AddHttpMessageHandler<FirebaseApiKeyHttpMessageHandler>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

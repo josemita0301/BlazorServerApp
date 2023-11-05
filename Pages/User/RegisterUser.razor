@@ -1,7 +1,7 @@
 ﻿@page "/register"
 @page "/register/{UserId}"
 @using BlazorServerApp.Controllers;
-@using BlazorServerApp.Models;
+@using BlazorServerApp.Models.Users;
 
 
 <div class="container">
@@ -12,7 +12,16 @@
     <input @bind="user.Email" type="email" placeholder="Email" />
     <input @bind="user.Password" type="password" placeholder="Contraseña" />
     <input @bind="user.Age" type="number" placeholder="Edad" />
-
+    <AuthorizeView Roles="Administrator">
+        <Authorized>
+            <select @bind="user.Role">
+                <option value="Administrator">Administrador</option>
+                <option value="Technician" selected>Técnico</option>
+                <option value="Team">Equipo</option>
+                <option value="ContentCreator">Creador de Contenidos</option>
+            </select>
+        </Authorized>
+    </AuthorizeView>
     <button @onclick="RegisterOrEditUser">@SubmitButtonText</button>
 </div>
 
@@ -37,7 +46,7 @@
         if (!string.IsNullOrEmpty(UserId))
         {
             user = await userController.GetUserById(UserId);
-
+            user.Password = "";
             if (user == null) user = new User();
 
             PageHeader = "Modificar Usuario";

@@ -1,4 +1,4 @@
-﻿using BlazorServerApp.Models;
+﻿using BlazorServerApp.Models.Users;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using System.Security.Claims;
@@ -27,8 +27,10 @@ namespace BlazorServerApp.Authentication
 
                 var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                 {
+                    new Claim(ClaimTypes.Name, user.id),
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Hash, user.Password)
+                    new Claim(ClaimTypes.Hash, user.Password),
+                    new Claim(ClaimTypes.Role, user.Role),
                 }, "CustomAuth"));
                 return await Task.FromResult(new AuthenticationState(claimsPrincipal));
             }
@@ -47,8 +49,10 @@ namespace BlazorServerApp.Authentication
                 await _sessionStorage.SetAsync("user", user);
                 claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                 {
+                    new Claim(ClaimTypes.Name, user.id),
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Hash, user.Password)
+                    new Claim(ClaimTypes.Hash, user.Password),
+                    new Claim(ClaimTypes.Role, user.Role)
                 }));
             }
             else

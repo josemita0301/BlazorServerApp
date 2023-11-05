@@ -2,7 +2,12 @@
 @using BlazorServerApp.Authentication;
 @using BlazorServerAppServices.Helpers
 @using BlazorServerApp.Controllers
-@using BlazorServerApp.Models
+@using BlazorServerApp.Models.Users
+
+@inject AuthenticationStateProvider CustomAuthStateProvider
+@inject NavigationManager NavManager
+@inject IToastService ToastService
+
 
 <div class="login-container">
     <div class="login-card">
@@ -27,10 +32,6 @@
 </div>
 
 @code {
-    @inject AuthenticationStateProvider authState
-    @inject NavigationManager NavManager
-    @inject IToastService ToastService
-
     public bool isLoading = false;
 
     //FormInformation
@@ -50,7 +51,7 @@
         if(attempts != 1)
         {
             UserController userController = new UserController();
-            if (await userController.LoginUser(userToLogin, (CustomAuthenticationStateProvider)authState))
+            if (await userController.LoginUser(userToLogin, (CustomAuthenticationStateProvider)CustomAuthStateProvider))
             {
                 isLoading = false;
 
@@ -58,6 +59,7 @@
             }
             else
             {
+                isLoading = false;
                 ToastService.ShowError($"Credenciales invalidas, quedan {attempts} intentos");
                 userToLogin.Password = "";
                 attempts--;

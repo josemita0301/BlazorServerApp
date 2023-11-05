@@ -1,12 +1,14 @@
 ﻿@page "/"
+@attribute [Authorize]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Index</PageTitle>
 
 <AuthorizeView>
-    <Authorized>
-        <h1>Si ve este mensaje significa que esta autenticado</h1>
-    </Authorized>
+    <Authorizing>
+        <h1>...</h1>
+    </Authorizing>
+
     <NotAuthorized>
         <h1>Ingeniería Web!</h1>
 
@@ -18,6 +20,12 @@
             Para este proyecto se ha usado Blazor con un patrón MVC y una base de datos en la nube llamada Firebase.
         </h6>
     </NotAuthorized>
+</AuthorizeView>
+
+<AuthorizeView Roles="Administrator">
+    <Authorized> 
+        <h1>Si ve este mensaje significa que es administrador</h1>
+    </Authorized>
 </AuthorizeView>
 
 

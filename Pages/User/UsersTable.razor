@@ -1,6 +1,8 @@
 ﻿@page "/users"
+@attribute [Authorize(Roles = "Administrator")]
 
 @using BlazorServerApp.Models
+@using BlazorServerApp.Models.Users
 @using BlazorServerApp.Controllers
 @using System.Security.Claims;
 
@@ -8,10 +10,17 @@
 @inject NavigationManager NavManager
 @inject IToastService ToastService
 
-<AuthorizeView>
+<AuthorizeView Roles="Administrator">
     <Authorized>
         <h2>Lista de Usuarios</h2>
-
+        <br>
+        <h6>Total de Administradores: @users.Where(u => u.Role.Equals("Administrator")).Count()</h6>
+        <h6>Total de Staff: @users.Where(u => u.Role.Equals("Team")).Count()</h6>
+        <h6>Total de Técnicos: @users.Where(u => u.Role.Equals("Technician")).Count()</h6>
+        <br>
+        <h6>Total de Creadores de Contenido: @users.Where(u => u.Role.Equals("ContentCreator")).Count()</h6>
+        <h6>Total de Usuarios: @users.Where(u => u.Role.Equals("User")).Count()</h6>
+        <br>
         <table class="users-table">
             <thead>
                 <tr>
@@ -26,6 +35,8 @@
             <tbody>
                 @foreach (var user in users)
                 {
+                    if (user.Role.Equals("Administrator")) continue;
+
                     <tr>
                         <td>@user.Name</td>
                         <td>@user.Username</td>
@@ -42,9 +53,6 @@
             </tbody>
         </table>
     </Authorized>
-    <NotAuthorized>
-
-    </NotAuthorized>
 </AuthorizeView>
 
 @code {
@@ -63,7 +71,7 @@
         var authState = await CustomAuthStateProvider.GetAuthenticationStateAsync();
         if (!authState.User.Identity.IsAuthenticated)
         {
-            NavManager.NavigateTo("/login");
+            NavManager.NavigateTo("/");
             return;
         }
 

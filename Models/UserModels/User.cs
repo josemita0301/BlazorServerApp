@@ -1,10 +1,10 @@
 ﻿using Google.Cloud.Firestore;
 
-namespace BlazorServerApp.Models
+namespace BlazorServerApp.Models.Users
 {
     public class User
     {
-        public User(){ }
+        public User() { }
 
         public User(string role, int age, string name, string password, string username, string email, string salt)
         {
@@ -20,7 +20,6 @@ namespace BlazorServerApp.Models
 
         [FirestoreProperty]
         public string Role { get; set; }
-
 
         [FirestoreProperty]
         public int Age { get; set; }
@@ -39,8 +38,6 @@ namespace BlazorServerApp.Models
 
         [FirestoreProperty]
         public string Salt { get; set; }
-
-        public string Observation { get; set; }
 
     }
 }

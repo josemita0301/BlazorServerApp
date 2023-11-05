@@ -1,4 +1,5 @@
 ﻿using BlazorServerApp.Models;
+using BlazorServerApp.Models.Users;
 using BlazorServerAppServices.Helpers;
 using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Components.Authorization;

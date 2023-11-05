@@ -1,5 +1,5 @@
 ﻿using BlazorServerApp.Authentication;
-using BlazorServerApp.Models;
+using BlazorServerApp.Models.Users;
 using BlazorServerApp.Pages.User;
 using BlazorServerAppServices.Helpers;
 using Firebase.Auth;
@@ -12,10 +12,10 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Text;
-using User = BlazorServerApp.Models.User;
+using User = BlazorServerApp.Models.Users.User;
 
 namespace BlazorServerApp.Controllers
-{  
+{
     public class UserController
     {
         private FirestoreDb firestoreDb;
@@ -34,6 +34,11 @@ namespace BlazorServerApp.Controllers
 
                 CollectionReference usersRef = firestoreDb.Collection("User");
 
+                if (string.IsNullOrEmpty(newUser.Role))
+                {
+                    newUser.Role = "User";
+                }
+
                 Dictionary<string, object> userDict = new Dictionary<string, object>
                 {
                     { "age", newUser.Age },
@@ -41,6 +46,7 @@ namespace BlazorServerApp.Controllers
                     { "password", Hashing.HashPassword($"{newUser.Password}{saltCreate}")},
                     { "username", newUser.Username },
                     { "email", newUser.Email },
+                    { "role", newUser.Role },
                     { "salt", saltCreate}
                 };
 
@@ -77,6 +83,7 @@ namespace BlazorServerApp.Controllers
                     { "password", Hashing.HashPassword($"{userToUpdate.Password}{saltEdit}")},
                     { "username", userToUpdate.Username },
                     { "email", userToUpdate.Email },
+                    { "role", userToUpdate.Role },
                     { "salt", saltEdit }
                 };
 
@@ -200,8 +207,10 @@ namespace BlazorServerApp.Controllers
 
                     User userFromDb = JsonConvert.DeserializeObject<User>(json);
                     userFromDb.UserId = userDocument.Id;
+                    userToLogin.Role = userFromDb.Role;
+                    userToLogin.id = userFromDb.UserId;
 
-                    if(Hashing.HashPassword($"{userToLogin.Password}{userFromDb.Salt}") == userFromDb.Password)
+                    if (Hashing.HashPassword($"{userToLogin.Password}{userFromDb.Salt}") == userFromDb.Password)
                     {
                         await customAuthStateProvider.UpdateAuthenticationState(userToLogin);
                         return true;
