@@ -200,4 +200,4 @@ Fin del Programa: El proceso concluye, ya sea con el acceso al sistema o con un 
     </li>
 </ul>
 <h2>Diagrama de interacción</h2>
-
+<img src="AdminsitracionMVC.png" style = "align-center">
