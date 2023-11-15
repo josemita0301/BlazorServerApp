@@ -1,0 +1,73 @@
+﻿@using BlazorServerApp.Controllers;
+@using BlazorServerApp.Models.PostsModels;
+
+@inject NavigationManager NavManager
+@inject IToastService ToastService
+
+<br />
+<br />
+<hr />
+<div class="post-container">
+    @foreach (var post in posts)
+    {
+        <div class="post">
+            <div class="post-header">
+                <div class="post-title">
+                    <div class="post-title" data-title="@post.CraftName">@post.CraftName</div>
+                </div>
+                <AuthorizeView Roles="Administrator">
+                    <Authorized>
+                        <button class="delete-post-btn" @onclick="() => DeletePost(post.UserPostId)">Eliminar</button>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+            <div class="post-media">
+                @if (!string.IsNullOrWhiteSpace(post.VideoLink))
+                {
+                    <iframe class="post-iframe" src="@post.VideoLink" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                }
+                else if (post.Image != null && post.Image.Any())
+                {
+                    <img src="@post.Image.First()" alt="Post Image">
+                }
+                else
+                {
+                    <img src="placeholder-image.jpg" alt="Default Image"> 
+                }
+            </div>
+            <div class="post-details">
+                <p class="post-description">@post.PostDescription</p>
+                <p class="post-date">@post.PublishDate</p>
+                <p class="post-rating">Rating: @post.Rating</p>
+                <p class="post-difficulty">Difficulty: @post.Difficulty</p>
+                <p class="post-stepcount">Steps: @post.StepCount</p>
+                <button class="view-post-btn">Ver Post</button>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<UserPost> posts = new List<UserPost>();
+
+    PostController postController = new PostController();
+
+    public string PostToDelete { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        posts = await postController.GetAllPosts();
+    }
+
+    public async Task DeletePost(string postId)
+    {
+        var result = await postController.DeletePost(postId);
+
+        if (result)
+            ToastService.ShowSuccess("Post borrado con éxito");
+        else
+            ToastService.ShowError("Error al borrar el post");
+
+        StateHasChanged();
+    }
+}

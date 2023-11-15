@@ -1,31 +1,62 @@
 ﻿@page "/"
+@using System.Globalization;
 @attribute [Authorize]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Home</PageTitle>
 
-<AuthorizeView>
-    <Authorizing>
-        <h1>...</h1>
-    </Authorizing>
+<div class="search-container">
+    <input type="text" class="search-input" placeholder="Buscar..." />
+    <button class="search-button">
+        <i class="fas fa-search"></i> <!-- Asegúrate de tener FontAwesome o cualquier otra librería para iconos -->
+    </button>
+</div>
 
-    <NotAuthorized>
-        <h1>Ingeniería Web!</h1>
+<div class="calendar-container">
+    <div class="month-selector">
+        <button class="month-nav" @onclick="PreviousMonth">❮</button>
+        <span class="month-name">@CurrentMonthName.ToUpper()</span>
+        <button class="month-nav" @onclick="NextMonth">❯</button>
+    </div>
+        <div class="days-grid">
+        @for (int day = 1; day <= DateTime.DaysInMonth(CurrentYear, CurrentMonth); day++)
+        {
+            <button class="day">@day</button>
+        }
+    </div>
+</div>
 
-        <h6>
-            En esta aplicación se estará realizando un CRUD básico a una tabla de usuario.
-        </h6>
+<BlazorServerApp.Pages.Post.ShowPosts></BlazorServerApp.Pages.Post.ShowPosts>
 
-        <h6>
-            Para este proyecto se ha usado Blazor con un patrón MVC y una base de datos en la nube llamada Firebase.
-        </h6>
-    </NotAuthorized>
-</AuthorizeView>
+@code {
+    private int CurrentMonth = DateTime.Now.Month;
+    private int CurrentYear = DateTime.Now.Year;
 
-<AuthorizeView Roles="Administrator">
-    <Authorized> 
-        <h1>Si ve este mensaje significa que es administrador</h1>
-    </Authorized>
-</AuthorizeView>
+    private string CurrentMonthName => new DateTime(CurrentYear, CurrentMonth, 1).ToString("MMMM", CultureInfo.CreateSpecificCulture("es"));
 
+    private void PreviousMonth()
+    {
+        if (CurrentMonth == 1)
+        {
+            CurrentMonth = 12;
+            CurrentYear--;
+        }
+        else
+        {
+            CurrentMonth--;
+        }
+    }
 
+    private void NextMonth()
+    {
+        if (CurrentMonth == 12)
+        {
+            CurrentMonth = 1;
+            CurrentYear++;
+        }
+        else
+        {
+            CurrentMonth++;
+        }
+    }
+}

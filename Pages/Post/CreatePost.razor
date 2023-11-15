@@ -1,0 +1,71 @@
+﻿@page "/create-post"
+@page "/create-post/{UserPostId}"
+@using BlazorServerApp.Controllers;
+@using BlazorServerApp.Models.PostsModels;
+
+<PageTitle>Create Post</PageTitle>
+
+<div class="container">
+    <h2 class="title">@PageHeader</h2>
+
+    <input @bind="post.CraftName" placeholder="Nombre de la publicación" />
+    <input @bind="post.PostDescription" placeholder="Descripción" />
+    <input @bind="post.PublishDate" placeholder="Fecha de publicación" />
+    <input @bind="post.VideoLink" placeholder="Enlace del video" />
+    <input @bind="post.Difficulty" type="number" placeholder="Dificultad" />
+    <input @bind="post.Rating" type="number" placeholder="Calificación" />
+    <input @bind="post.StepCount" type="number" placeholder="Número de pasos" />
+
+    <button @onclick="CreateOrEditPost">@SubmitButtonText</button>
+</div>
+
+@code {
+    @inject NavigationManager NavManager
+    @inject IToastService ToastService
+
+    public string PageHeader = "Crear Publicación";
+    public string SubmitButtonText = "Publicar";
+
+    [Parameter]
+    public string UserPostId { get; set; }
+
+    private UserPost post = new UserPost();
+
+    private PostController postController = new PostController();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(UserPostId))
+        {
+            post = await postController.GetPostById(UserPostId);
+            if (post == null) post = new UserPost();
+
+            PageHeader = "Modificar Publicación";
+            SubmitButtonText = "Modificar";
+        }
+    }
+
+    private async void CreateOrEditPost()
+    {
+        if (string.IsNullOrEmpty(UserPostId))
+        {
+            var result = await postController.CreatePost(post);
+
+            if (result)
+                ToastService.ShowSuccess("Publicación creada con éxito");
+            else
+                ToastService.ShowError("Error al crear la publicación");
+        }
+        else
+        {
+            var result = await postController.EditPost(post);
+
+            if (result)
+                ToastService.ShowSuccess("Publicación modificada con éxito");
+            else
+                ToastService.ShowError("Error al modificar la publicación");
+        }
+
+        NavManager.NavigateTo("/posts");
+    }
+}

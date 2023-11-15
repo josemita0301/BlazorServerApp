@@ -1,0 +1,162 @@
+﻿.month-selector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+.month-nav {
+    background-color: #a29bfe;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .month-nav:hover {
+        background-color: #6c5ce7;
+    }
+
+.month-name {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    flex-grow: 1; 
+}
+
+.month-nav i {
+    display: block;
+}
+
+.days-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.day {
+    width: 40px; 
+    height: 40px; 
+    line-height: 40px; 
+    text-align: center;
+    background-color: #dfe6e9;
+    color: #2d3436;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px; 
+}
+
+    .day:hover {
+        background-color: #a29bfe;
+        color: white;
+    }
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%; /* Asegúrate de que el contenedor ocupe el ancho completo */
+}
+
+.search-input {
+    padding: 10px;
+    border: ridge;
+    border-radius: 20px 0 0 20px;
+    font-size: 16px;
+    outline: none;
+    width: 80%; /* Ocupa la mayor parte del contenedor */
+    max-width: 600px; /* Puedes ajustar esto para que no se vuelva demasiado grande en pantallas grandes */
+}
+
+.search-button {
+    padding: 16px 30px; /* Ajusta el padding para que el botón sea más ancho */
+    border: none;
+    background-color: #a29bfe;
+    border-radius: 0 20px 20px 0;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+    width: 20%; /* Ocupa el espacio restante */
+    max-width: 150px; /* Asegúrate de que no se vuelva demasiado grande */
+}
+
+    .search-button:hover {
+        background-color: #6c5ce7;
+    }
+
+.fas.fa-search {
+    display: block;
+}
+
+@keyframes slideOutToLeft {
+    from {
+        transform: translateX(0%);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0%);
+    }
+}
+
+@keyframes slideOutToRight {
+    from {
+        transform: translateX(0%);
+    }
+
+    to {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes slideInFromLeft {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0%);
+    }
+}
+
+.slide-out-to-left {
+    animation: slideOutToLeft 0.5s forwards;
+}
+
+.slide-in-from-right {
+    animation: slideInFromRight 0.5s forwards;
+}
+
+.slide-out-to-right {
+    animation: slideOutToRight 0.5s forwards;
+}
+
+.slide-in-from-left {
+    animation: slideInFromLeft 0.5s forwards;
+}
