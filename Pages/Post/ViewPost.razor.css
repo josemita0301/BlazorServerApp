@@ -55,10 +55,6 @@ button {
         background-color: #4836d6;
     }
 
-.add-material {
-    background-color: #2a9dfa;
-}
-
 .add-step {
     background-color: #6edb7c;
 }
@@ -75,6 +71,7 @@ textarea {
     resize: vertical; /* Permite al usuario ajustar la altura del textarea */
     height: 100px; /* Altura inicial del textarea */
 }
+
 
 .material-container {
     margin: 0px 0px 20px 20px;

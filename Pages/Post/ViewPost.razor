@@ -1,0 +1,129 @@
+﻿@page "/view-post/{UserPostId}"
+@using BlazorServerApp.Authentication
+@using BlazorServerApp.Controllers;
+@using BlazorServerApp.Models.PostsModels;
+@using BlazorServerApp.Models;
+@using System.Security.Claims
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>Create Post</PageTitle>
+
+<div class="main-container">
+    <div class="general-info-container">
+        <h2 class="title">@post.CraftName</h2>
+        <label> Nombre de la Publicación</label>
+        <input @bind="post.CraftName" placeholder="Nombre de la publicación" disabled="true" />
+        <label> Descripción</label>
+        <input @bind="post.PostDescription" placeholder="Descripción" disabled="true" />
+        <label> Nombre de la Publicación</label>
+        <label> Nombre del Evento</label>
+        <input @bind="post.EventName" placeholder="Nombre del Evento" disabled="true" />
+        <label> Fecha del Evento</label>
+        <input @bind="post.EventDate" placeholder="Fecha del Evento" disabled="true" />
+        <label> Enlace al video</label>
+        <input @bind="post.VideoLink" placeholder="Enlace del video" disabled="true" />
+        <label>Nivel de Dificultad</label>
+        <ul>
+            <li>Nivel 1: Menor o igual a 30 min </li>
+            <li>Nivel 2: Mayor a 30 min y menor a 60 min </li>
+            <li>Nivel 3: Mayor a 60 min y menor a 2 horas </li>
+            <li>Nivel 4: Mayor a 2 horas y menor a 4 horas </li>
+            <li>Nivel 5: Mayor a 4 horas  </li>
+        </ul>
+        <input @bind="post.Difficulty" type="number" min="1" max="5" placeholder="Dificultad" disabled="true" />
+    </div>
+
+    <div class="steps-container">
+        <h2 class="title">Pasos</h2>
+        @foreach (var step in steps)
+        {
+            <div>
+                <h3>Paso @step.StepNumber</h3>
+                <input @bind="step.StepName" placeholder="Nombre del Paso" disabled="true" />
+                <textarea @bind="step.Description" placeholder="Descripción del Paso" disabled="true"></textarea>
+                <input @bind="step.StepImage" placeholder="URL de la Imagen" disabled="true" />
+                <input @bind="step.TimeNeeded" type="number" min="1" max="120" placeholder="Tiempo Necesario (minutos)" disabled="true" />
+            </div>
+            <hr>
+            <br>
+            @foreach (Material material in step.StepMaterials)
+            {
+                <div class="material-container">
+                    <div class="material-row">
+                        <label>Material:</label>
+                        <input @bind="material.NombreMaterial" placeholder="Nombre" />
+                        <label>Cantidad en unidades:</label>
+                        <input @bind="material.Cantidad" type="number" min="1" placeholder="0" />
+                    </div>
+                    <div class="material-row">
+                        <label>Dimensiones:</label>
+                        <input @bind="material.Ancho" placeholder="Ancho" />
+                        <span>x</span>
+                        <input @bind="material.Largo" placeholder="Largo" />
+                        <span>x</span>
+                        <input @bind="material.Alto" placeholder="Alto" />
+                        <label>@material.UnidadMedida</label>
+                    </div>
+                    <div class="material-row">
+                        <label>Peso:</label>
+                        <input @bind="material.Peso" placeholder="Peso" />
+                        <label>@material.UnidadDePeso</label>
+                    </div>
+                    <div class="material-row">
+                        <label>Textura:</label>
+                        <input @bind="material.Textura" placeholder="Textura" />
+                        <label>Color:</label>
+                        <input @bind="material.Color" placeholder="Color" />
+                    </div>
+                    <div class="material-row">
+                        <label>Precio Unitario:</label>
+                        <input @bind="material.PrecioUnitario" placeholder="Precio" type="number" />
+                        <label>USD</label>
+                    </div>
+                    <label>Información Adicional</label>
+                    <div class="material-row">
+                        <textarea @bind="material.InfoAdicional" placeholder="Ingrese otros detlles sobre el material"></textarea>
+                    </div>
+                </div>
+
+            }
+        }
+    </div>
+
+</div>
+@code {
+    private UserPost post = new UserPost();
+    private List<Evento> eventosSelector { get; set; } = new List<Evento>();
+    private string selectedValue;
+    private bool GlobalEvent { get; set; }
+
+    private PostController postController = new PostController();
+    private EventController eventController = new EventController();
+    private PostStepController postStepController = new PostStepController();
+    private MaterialController materialController = new MaterialController();
+
+    private List<PostStep> steps { get; set; } = new List<PostStep>();
+    private List<Material> materials { get; set; } = new List<Material>();
+
+    [Parameter]
+    public string UserPostId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        eventosSelector = await eventController.GetAllEventos();
+
+        post = await postController.GetPostById(UserPostId);
+
+        steps = await postStepController.GetAllSteps();
+
+        materials = await materialController.GetAllMaterials();
+
+        steps = steps.OrderBy(p => p.StepNumber).Where(ps => ps.UserPostId == post.UserPostId).ToList();
+
+        foreach (var step in steps)
+        {
+            step.StepMaterials = materials.Where(m => m.PostStepId == step.PostStepId).ToList();
+        }
+    }
+}

@@ -1,0 +1,193 @@
+﻿@page "/advanced-search"
+@using BlazorServerApp.Authentication
+@using BlazorServerApp.Models
+@using BlazorServerApp.Models.PostsModels
+@using BlazorServerApp.Services
+@using System.Security.Claims
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavManager
+@inject IToastService ToastService
+
+<div class="filter-section">
+    <div class="filter-controls">
+        <div class="filter-controls">
+            <div class="filter-price">
+                <label for="priceInput">Presupuesto: </label>
+                <input type="number" @bind="precio" min="0" class="price-input" id="priceInput" />
+            </div>
+            <div class="divider"></div>
+            <div class="filter-difficulty">
+                <label for="difficultySelect">Dificultad: </label>
+                <select @bind="dificultad" class="difficulty-select" id="difficultySelect">
+                    <option value="0">Sin dificultad</option>
+                    <option value="1">Muy Fácil</option>
+                    <option value="2">Fácil</option>
+                    <option value="3">Intermedio</option>
+                    <option value="4">Difícil</option>
+                    <option value="5">Muy difícil</option>
+                </select>
+            </div>
+            <div class="divider"></div>
+            <div class="filter-material">
+                <label for="materialInput">Material: </label>
+                <input type="text" @bind="nombreMaterial" placeholder="Nombre del material" class="material-name-input" id="materialInput" />
+                <input type="number" @bind="cantidadMaterial" placeholder="Cantidad" min="1" class="material-quantity-input" />
+                <button @onclick="AgregarMaterial" class="add-material-btn">Añadir</button>
+            </div>
+            <button @onclick="RealizarBusquedaAvanzada" class="search-advanced-btn">Realizar búsqueda avanzada</button>
+        </div>
+    </div>
+    <div class="material-tags">
+        @foreach (var material in materialesSeleccionados)
+        {
+            <div class="material-tag" @onclick="() => RemoverMaterial(material)">
+                @material.Nombre (@material.Cantidad) <span class="remove-tag">&times;</span>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="posts-container">
+    @if (bigList.Count == 0)
+    {
+        <div>
+            <h3>
+                No hay posts para mostrar
+            </h3>
+        </div>
+    }
+    else
+    {
+        @for (int i = 0; i < bigList.Count; i++)
+        {
+            if (bigList[i].Count == 0)
+            {
+                continue;
+            }
+            else
+            {
+                if (bigList.Count == 1)
+                {
+                    <h3>Posts que te podrían interesar</h3>
+                }
+                else
+                {
+                    <h3>Post encontrados con dificultad @bigList[i][0].Difficulty</h3>
+                }
+
+                foreach (var post in bigList[i])
+                {
+                    <div class="post">
+                        <div class="post-header">
+                            <div class="post-title">
+                                <div class="post-title" data-title="@post.CraftName">@post.CraftName</div>
+                            </div>
+                        </div>
+                        <div class="post-media">
+                            @if (!string.IsNullOrWhiteSpace(post.VideoLink))
+                            {
+                                <iframe class="post-iframe" src="@post.VideoLink" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            }
+                            else if (post.Image != null && post.Image.Any())
+                            {
+                                <img src="@post.Image.First()" alt="Post Image">
+                            }
+                            else
+                            {
+                                <img alt="Default Image">
+                            }
+                        </div>
+                        <div class="post-details">
+                            <p class="post-description">@post.PostDescription</p>
+                            <p class="post-date">@post.PublishDate</p>
+                            <p class="post-difficulty">Difficulty: @post.Difficulty</p>
+                            <p class="post-stepcount">Steps: @post.StepCount</p>
+                            <button class="view-post-btn" @onclick="(() => ViewPost(post.UserPostId))">Ver Post</button>
+                        </div>
+                    </div>
+                }
+            }
+        }
+    }
+    
+</div>
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private ClaimsPrincipal AuthenticationStateUser { get; set; }
+    private ClaimsPrincipal AuthenticationStateProviderUser { get; set; }
+
+    private decimal precio { get; set; }
+    private int dificultad { get; set; }
+    private int count { get; set; }
+
+    string nombreMaterial;
+    int cantidadMaterial;
+    List<MaterialFilter> materialesSeleccionados = new List<MaterialFilter>();
+
+    private List<List<UserPost>> bigList { get; set; }
+
+    private int MyProperty { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        bigList = new List<List<UserPost>>();
+    }
+
+    private void AgregarMaterial()
+    {
+        if (!string.IsNullOrWhiteSpace(nombreMaterial) && cantidadMaterial > 0)
+        {
+            materialesSeleccionados.Add(new MaterialFilter { Nombre = nombreMaterial, Cantidad = cantidadMaterial });
+            nombreMaterial = string.Empty; 
+            cantidadMaterial = 0;
+        }
+    }
+
+    private void RemoverMaterial(MaterialFilter material)
+    {
+        materialesSeleccionados.Remove(material);
+    }
+
+    private async void RealizarBusquedaAvanzada()
+    {
+        if((double)precio == 0.00 || materialesSeleccionados.Count == 0)
+        {
+            ToastService.ShowWarning("Coloque un precio estimado y al menos un material");
+        }
+        AuthenticationState authenticationState;
+
+        authenticationState = await authenticationStateTask;
+        this.AuthenticationStateUser = authenticationState.User;
+
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+        authenticationState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        this.AuthenticationStateProviderUser = authenticationState.User;
+        var authState = authenticationState;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            bigList = await  RecommendationService.GetRecommendedData(materialesSeleccionados, (double)precio, dificultad, (authState.User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value).ToString());
+        }
+        else
+        {
+            bigList= await RecommendationService.GetRecommendedData(materialesSeleccionados, (double)precio, dificultad, null);
+        }
+
+        count = 0;
+
+        StateHasChanged();
+    }
+
+    public async Task EditPost(string UserPostId)
+    {
+        NavManager.NavigateTo($"/create-post/{UserPostId}");
+    }
+
+    public async Task ViewPost(string UserPostId)
+    {
+        NavManager.NavigateTo($"/view-post/{UserPostId}");
+    }
+}

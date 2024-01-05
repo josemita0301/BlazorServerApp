@@ -1,38 +1,116 @@
 ﻿@page "/"
+@page "/EventDate/{EventDate}"
+@page "/SearchTerm/{SearchTerm}"
+@page "/EventName/{EventName}"
 @using System.Globalization;
+@using BlazorServerApp.Models
+@using BlazorServerApp.Controllers
 @attribute [Authorize]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
+
 <PageTitle>Home</PageTitle>
 
-<div class="search-container">
-    <input type="text" class="search-input" placeholder="Buscar..." />
-    <button class="search-button">
-        <i class="fas fa-search"></i> <!-- Asegúrate de tener FontAwesome o cualquier otra librería para iconos -->
-    </button>
-</div>
+<div class="container">
+    <div class="left-container">
+        <div class="search-container">
+            <input type="text" class="search-input" @bind="inputTerm" placeholder="Buscar..." />
+            <button class="search-button" @onclick="FilterBySearchTerm">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
 
-<div class="calendar-container">
-    <div class="month-selector">
-        <button class="month-nav" @onclick="PreviousMonth">❮</button>
-        <span class="month-name">@CurrentMonthName.ToUpper()</span>
-        <button class="month-nav" @onclick="NextMonth">❯</button>
+        <div class="scrollable-content">
+            <BlazorServerApp.Pages.Post.ShowPosts EventDate="@EventDate" SearchTerm="@SearchTerm" EventName="@EventName" />
+        </div>
     </div>
+
+    <div class="right-container">
+        <div class="month-selector">
+            <button class="month-nav" @onclick="PreviousMonth">❮</button>
+            <span class="month-name">@CurrentMonthName.ToUpper()</span>
+            <button class="month-nav" @onclick="NextMonth">❯</button>
+        </div>
         <div class="days-grid">
-        @for (int day = 1; day <= DateTime.DaysInMonth(CurrentYear, CurrentMonth); day++)
-        {
-            <button class="day">@day</button>
-        }
+            @for (int day = 1; day <= DateTime.DaysInMonth(CurrentYear, CurrentMonth); day++)
+            {
+                int localDay = day;
+                <button class="day" @onclick="() => FilterByDate(localDay, CurrentMonth)">@day</button>
+            }
+        </div>
+        <div class="event-container">
+            @foreach (var item in eventos)
+            {
+                string localName = item.Nombre;
+                <button class="event-button" @onclick="() => FilterByEventName(localName)">@item.Nombre</button>
+            }
+        </div>
     </div>
+
 </div>
 
-<BlazorServerApp.Pages.Post.ShowPosts></BlazorServerApp.Pages.Post.ShowPosts>
+
+
 
 @code {
+    @inject NavigationManager NavManager
+    private string inputTerm { get; set; }
     private int CurrentMonth = DateTime.Now.Month;
     private int CurrentYear = DateTime.Now.Year;
 
+    [Parameter]
+    public string EventDate { get; set; }
+
+    [Parameter]
+    public string EventName { get; set; }
+
+    [Parameter]
+    public string SearchTerm { get; set; }
+
     private string CurrentMonthName => new DateTime(CurrentYear, CurrentMonth, 1).ToString("MMMM", CultureInfo.CreateSpecificCulture("es"));
+
+    private List<Evento> eventos = new List<Evento>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        EventController ec = new EventController();
+
+        eventos = await ec.GetAllEventos();
+
+        if (!string.IsNullOrEmpty(EventDate))
+        {
+            List<Evento> eventosloop = new List<Evento>();
+            string DateFilter = EventDate.Insert(2, "/") +"/2023";
+            foreach (var item in this.eventos)
+            {
+                if (DateFilter.Equals(item.Fecha))
+                {
+                    eventosloop.Add(item);
+                }
+            }
+            eventos = eventosloop;
+
+        }
+    }
+
+    private void FilterByDate(int Day, int Month)
+    {
+        string stringDay = Day.ToString().PadLeft(2, '0');
+        string stringMonth = Month.ToString().PadLeft(2, '0');
+
+        NavManager.NavigateTo($"/EventDate/{stringDay}{stringMonth}", true);
+    }
+
+    private void FilterByEventName(string eventName)
+    {
+        NavManager.NavigateTo($"/EventName/{eventName}", true);
+    }
+
+    private void FilterBySearchTerm()
+    {
+        NavManager.NavigateTo($"/SearchTerm/{inputTerm}", true);
+    }
 
     private void PreviousMonth()
     {

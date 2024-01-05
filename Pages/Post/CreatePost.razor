@@ -1,22 +1,142 @@
 ﻿@page "/create-post"
 @page "/create-post/{UserPostId}"
+@using BlazorServerApp.Authentication
 @using BlazorServerApp.Controllers;
 @using BlazorServerApp.Models.PostsModels;
+@using BlazorServerApp.Models;
+@using System.Security.Claims
+@using BlazorServerApp.Services
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Create Post</PageTitle>
 
-<div class="container">
-    <h2 class="title">@PageHeader</h2>
+<div class="main-container">
+    <div class="general-info-container">
+        <h2 class="title">@PageHeader</h2>
+        <label> Nombre de la Publicación</label>
+        <input @bind="post.CraftName" placeholder="Nombre de la publicación" />
+        <label> Descripción</label>
+        <input @bind="post.PostDescription" placeholder="Descripción" />
+        <label> Nombre de la Publicación</label>
+        <select @onchange="OnChangeEventNameChanged">
+            <option value="N/A">Sin evento especifico</option>
+            @foreach (var item in eventosSelector)
+            {
+                <option value="@item.EventId">
+                    @item.Nombre
+                </option>
+            }
+        </select>
 
-    <input @bind="post.CraftName" placeholder="Nombre de la publicación" />
-    <input @bind="post.PostDescription" placeholder="Descripción" />
-    <input @bind="post.PublishDate" placeholder="Fecha de publicación" />
-    <input @bind="post.VideoLink" placeholder="Enlace del video" />
-    <input @bind="post.Difficulty" type="number" placeholder="Dificultad" />
-    <input @bind="post.Rating" type="number" placeholder="Calificación" />
-    <input @bind="post.StepCount" type="number" placeholder="Número de pasos" />
+        @if (!GlobalEvent)
+        {
+            <label> Fecha del Evento</label>
+            <input @bind="post.EventDate" placeholder="Fecha del Evento" />
+            <label> Nombre del Evento</label>
+            <input @bind="post.EventName" placeholder="Nombre del Evento" />
+        }
 
-    <button @onclick="CreateOrEditPost">@SubmitButtonText</button>
+        <label> Enlace al video</label>
+        <input @bind="post.VideoLink" placeholder="Enlace del video" />
+        <label>Nivel de Dificultad</label>
+        <ul>
+            <li>Nivel 1: Menor o igual a 30 min </li>
+            <li>Nivel 2: Mayor a 30 min y menor a 60 min </li>
+            <li>Nivel 3: Mayor a 60 min y menor a 2 horas </li>
+            <li>Nivel 4: Mayor a 2 horas y menor a 4 horas </li>
+            <li>Nivel 5: Mayor a 4 horas  </li>
+        </ul>
+        <input @bind="post.Difficulty" type="number" min="1" max="5" placeholder="Dificultad" />
+
+
+        <button @onclick="CreateOrEditPost">@SubmitButtonText</button>
+    </div>
+
+    <div class="steps-container">
+        <h2 class="title">Pasos</h2>
+
+        @foreach (var step in steps)
+        {
+            <div>
+                <h3>Paso @step.StepNumber</h3>
+                <input @bind="step.StepName" placeholder="Nombre del Paso" />
+                <textarea @bind="step.Description" placeholder="Descripción del Paso"></textarea>
+                <input @bind="step.StepImage" placeholder="URL de la Imagen" />
+                <input @bind="step.TimeNeeded" type="number" min="1" max="120" placeholder="Tiempo Necesario (minutos)" />
+
+                @foreach (Material material in step.StepMaterials)
+                {
+                    <div class="material-container">
+                        <div class="material-row">
+                            <label>Material:</label>
+                            <input @bind="material.NombreMaterial" placeholder="Nombre" />
+                            <label>Cantidad en unidades:</label>
+                            <input @bind="material.Cantidad" type="number" min="1" placeholder="0" />
+                        </div>
+                        <div class="material-row">
+                            <label>Dimensiones:</label>
+                            <input @bind="material.Ancho" type="number" min="0" placeholder="Ancho" />
+                            <span>x</span>
+                            <input @bind="material.Largo" type="number" min="0" placeholder="Largo" />
+                            <span>x</span>
+                            <input @bind="material.Alto" type="number" min="0" placeholder="Alto" />
+                            <select @bind="material.UnidadMedida">
+                                @foreach (var item in MeasureUnits)
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="material-row">
+                            <label>Peso:</label>
+                            <input @bind="material.Peso" placeholder="Peso" />
+                            <select @bind="material.UnidadDePeso">
+                                @foreach (var item in WeightUnits)
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="material-row">
+                            <label>Textura:</label>
+                            <input @bind="material.Textura" placeholder="Textura" />
+                            <label>Color:</label>
+                            <select @bind="material.Color">
+                                @foreach (var color in Colors)
+                                {
+                                    <option value="@color.ColorName"> @color.ColorName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="material-row">
+                            <label>Precio Unitario:</label>
+                            <input @bind="material.PrecioUnitario" placeholder="Precio" type="number" />
+                            <label>USD</label>
+                        </div>
+                        <label>Información Adicional</label>
+                        <div class="material-row">
+                            <textarea @bind="material.InfoAdicional" placeholder="Ingrese otros detlles sobre el material"></textarea>
+                        </div>
+
+
+                        <button class="delete-material" @onclick="() => DeleteMaterial(step, material.NombreMaterial)">Eliminar Material</button>
+                    </div>
+
+                }
+                <br />
+                <button class="add-material" @onclick="() => AddNewMaterial(step)">Agregar Material</button>
+                <hr>
+                <button class="delete-step" @onclick="() => DeleteStep(step.StepNumber)">Borrar Paso</button>
+            </div>
+            <hr>
+
+        }
+
+        <button class="add-step" @onclick="AddNewStep">Agregar Paso</button>
+
+    </div>
+
 </div>
 
 @code {
@@ -26,46 +146,241 @@
     public string PageHeader = "Crear Publicación";
     public string SubmitButtonText = "Publicar";
 
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private ClaimsPrincipal AuthenticationStateUser { get; set; }
+    private ClaimsPrincipal AuthenticationStateProviderUser { get; set; }
+
+
     [Parameter]
     public string UserPostId { get; set; }
 
     private UserPost post = new UserPost();
+    private List<Evento> eventosSelector { get; set; } = new List<Evento>();
+    private string selectedValue;
+    private bool GlobalEvent { get; set; }
 
     private PostController postController = new PostController();
+    private EventController eventController = new EventController();
+    private PostStepController postStepController = new PostStepController();
+    public MaterialController materialController = new MaterialController();
+
+    private List<PostStep> steps { get; set; } = new List<PostStep>();
+    private List<PostStep> stepsToDelete { get; set; } = new List<PostStep>();
+
+
+    private List<Color> Colors = new List<Color>();
+    private List<string> WeightUnits = new List<string>();
+    private List<string> MeasureUnits = new List<string>();
+    private List<Material> materialsToDelete { get; set; } = new List<Material>();
+    private List<Material> materials { get; set; } = new List<Material>();
 
     protected override async Task OnParametersSetAsync()
     {
+        eventosSelector = await eventController.GetAllEventos();
+
         if (!string.IsNullOrEmpty(UserPostId))
         {
             post = await postController.GetPostById(UserPostId);
+            steps = await postStepController.GetAllSteps();
+            materials = await materialController.GetAllMaterials();
+
+            steps = steps.Where(ps => ps.UserPostId == post.UserPostId).ToList();
+            
+            foreach (var item in steps)
+            {
+                item.StepMaterials = materials.Where(m => m.PostStepId == item.PostStepId).ToList();
+            }
+
+            materials = new List<Material>();
+
+            foreach (var item in steps)
+            {
+                materials.AddRange(item.StepMaterials);
+            }
+
             if (post == null) post = new UserPost();
 
             PageHeader = "Modificar Publicación";
-            SubmitButtonText = "Modificar";
+            SubmitButtonText = "Guardar Cambios";
         }
+
+
+
+        if (steps == null)
+        {
+            steps = new List<PostStep>();
+        }
+        else
+        {
+            foreach (var item in steps)
+            {
+                if (item.StepMaterials == null)
+                {
+                    item.StepMaterials = new List<Material>();
+                }
+            }
+        }
+
+        Colors = MaterialService.CreateColors();
+        WeightUnits = MaterialService.CreateWeightUnits();
+        MeasureUnits = MaterialService.CreateMeasurementUnits();
     }
 
     private async void CreateOrEditPost()
     {
+        AuthenticationState authenticationState;
+
+        authenticationState = await authenticationStateTask;
+        this.AuthenticationStateUser = authenticationState.User;
+
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+        authenticationState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        this.AuthenticationStateProviderUser = authenticationState.User;
+        var authState = authenticationState;
+
+        post.PublishDate = DateTime.Now.ToString(format: "dd-MM-yyyy").Replace("-", "/");
+
+        post.StepCount = steps.Count;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            post.UserId = (authState.User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value).ToString();
+        }
+
+
         if (string.IsNullOrEmpty(UserPostId))
         {
-            var result = await postController.CreatePost(post);
+            if(steps.Count == 0)
+            {
+                ToastService.ShowWarning("Debe de agregar al menos un paso");
+            }
+            if (materials.Count == 0)
+            {
+                ToastService.ShowWarning("Debe de agregar al menos un material");
+            }
+            post.UserPostId = await postController.CreatePost(post);
 
-            if (result)
+            if (!string.IsNullOrEmpty(post.UserPostId))
+            {
+                foreach (PostStep step in steps)
+                {
+                    step.UserPostId = post.UserPostId;
+
+                    foreach (var item in step.StepMaterials)
+                    {
+                        item.PrecioUnitarioDivisa = "USD";
+                    }
+                }
+
+                await postStepController.CreateSteps(steps);
                 ToastService.ShowSuccess("Publicación creada con éxito");
+                NavManager.NavigateTo("/", true);
+            }
+
             else
                 ToastService.ShowError("Error al crear la publicación");
+
         }
         else
         {
+            foreach (var item in stepsToDelete)
+            {
+                steps.Remove(item);
+            }
+
+            foreach (var item in materialsToDelete)
+            {
+                foreach (var step in steps)
+                {
+                    step.StepMaterials.Remove(item);
+                }
+            }
+
+            int stepNumber = 1;
+
+            foreach (var step in steps)
+            {
+                step.UserPostId = post.UserPostId;
+                step.StepNumber = stepNumber++;
+            }
+
+            await postStepController.DeletePostSteps(stepsToDelete);
+            await postStepController.EditSteps(steps);
+
+            await materialController.DeleteMaterials(materialsToDelete);
+            await materialController.EditMaterials(materials);
+
+            post.StepCount = steps.Count;
+
             var result = await postController.EditPost(post);
 
             if (result)
+            {
                 ToastService.ShowSuccess("Publicación modificada con éxito");
+                NavManager.NavigateTo("/", true);
+            }
             else
                 ToastService.ShowError("Error al modificar la publicación");
         }
+        //}
+    }
 
-        NavManager.NavigateTo("/posts");
+    private void AddNewStep()
+    {
+        PostStep stepToAdd = new PostStep();
+        stepToAdd.StepNumber = steps.Count + 1;
+        stepToAdd.StepMaterials = new List<Material>();
+        steps.Add(stepToAdd);
+    }
+
+    private void DeleteStep(int stepNum)
+    {
+        PostStep stepToRemove = new PostStep();
+        stepToRemove = steps.Where(s => s.StepNumber == stepNum).FirstOrDefault();
+        stepsToDelete.Add(stepToRemove);
+        steps.Remove(stepToRemove);
+
+        int stepNumber = 1;
+        foreach (var step in steps)
+        {
+            step.StepNumber = stepNumber++;
+        }
+    }
+
+    private void AddNewMaterial(PostStep step)
+    {
+        Material materialToAdd = new Material();
+        materialToAdd.Color = "";
+        materialToAdd.UnidadMedida = "";
+        materialToAdd.UnidadDePeso = "";
+        step.StepMaterials.Add(materialToAdd);
+        materials.Add(materialToAdd);
+    }
+
+    private void DeleteMaterial(PostStep step, string Material)
+    {
+        Material materialToDelete = new Material();
+        materialToDelete = step.StepMaterials.Where(m => m.NombreMaterial == Material).FirstOrDefault();
+        materialsToDelete.Add(materialToDelete);
+        step.StepMaterials.Remove(materialToDelete);
+        materials.Remove(materialToDelete);
+    }
+
+    private void OnChangeEventNameChanged(ChangeEventArgs e)
+    {
+        selectedValue = e.Value.ToString();
+
+        if (selectedValue.Equals("N/A"))
+        {
+            GlobalEvent = false;
+        }
+        else
+        {
+            GlobalEvent = true;
+            post.EventName = eventosSelector.Where(e => e.EventId == selectedValue).FirstOrDefault().Nombre;
+            post.EventDate = eventosSelector.Where(e => e.EventId == selectedValue).FirstOrDefault().Fecha;
+        }
     }
 }

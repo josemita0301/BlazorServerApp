@@ -1,164 +1,243 @@
-﻿//using BlazorServerAppServices.Helpers;
-//using Google.Cloud.Firestore;
-//using Newtonsoft.Json;
+﻿using BlazorServerApp.Models.PostsModels;
+using BlazorServerAppServices.Helpers;
+using Google.Cloud.Firestore;
+using Newtonsoft.Json;
 
-//namespace BlazorServerApp.Controllers
-//{
-//    public class PostStepController
-//    {
-//        private FirestoreDb firestoreDb;
+namespace BlazorServerApp.Controllers
+{
+    public class PostStepController
+    {
+        private FirestoreDb firestoreDb;
 
-//        public PostStepController()
-//        {
-//            firestoreDb = FirestoreDb.Create("blazorserverdb");
-//        }
+        public PostStepController()
+        {
+            firestoreDb = FirestoreDb.Create("blazorserverdb");
+        }
 
-//        #region CRUD User
-//        public async Task<bool> CreateUser(User newUser)
-//        {
-//            try
-//            {
-//                string saltCreate = DateTime.Now.ToString();
+        #region CRUD PostSteps
+        public async Task<bool> CreateSteps(List<PostStep> steps)
+        {
+            try
+            {
+                MaterialController mc = new MaterialController();
 
-//                CollectionReference usersRef = firestoreDb.Collection("User");
+                foreach (var newStep in steps)
+                {
+                    CollectionReference postStepRef = firestoreDb.Collection("PostStep");
 
-//                if (string.IsNullOrEmpty(newUser.Role))
-//                {
-//                    newUser.Role = "User";
-//                }
+                    Dictionary<string, object> postStepDict = new Dictionary<string, object>
+                    {
+                        { "Description", newStep.Description},
+                        { "StepImage", newStep.StepImage},
+                        { "StepName", newStep.StepName},
+                        { "StepNumber", newStep.StepNumber},
+                        { "UserPostId", newStep.UserPostId},
+                        { "timeNeeded", newStep.TimeNeeded}
+                    };
 
-//                Dictionary<string, object> userDict = new Dictionary<string, object>
-//                {
-//                    { "age", newUser.Age },
-//                    { "name", newUser.Name },
-//                    { "password", Hashing.HashPassword($"{newUser.Password}{saltCreate}")},
-//                    { "username", newUser.Username },
-//                    { "email", newUser.Email },
-//                    { "role", newUser.Role },
-//                    { "salt", saltCreate}
-//                };
+                    DocumentReference docRef = await postStepRef.AddAsync(postStepDict);
 
-//                await usersRef.AddAsync(userDict);
+                    foreach (var item in newStep.StepMaterials)
+                    {
+                        item.PostStepId = docRef.Id;
+                    }
 
-//                return true;
-//            }
-//            catch (Exception ex)
-//            {
-//                Console.WriteLine($"Error al crear el usuario: {ex.Message}");
-//                return false;
-//            }
-//        }
+                    await mc.CreateMaterials(newStep.StepMaterials);
+                }
 
-//        public async Task<bool> EditUser(User userToUpdate)
-//        {
-//            if (string.IsNullOrEmpty(userToUpdate.UserId))
-//            {
-//                Console.WriteLine("UserId no puede estar vacío al editar un usuario.");
-//                return false;
-//            }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al crear el usuario: {ex.Message}");
+                return false;
+            }
+        }
 
-//            try
-//            {
+        public async Task<bool> CreateStep(PostStep newStep)
+        {
+            try
+            {
 
-//                string saltEdit = DateTime.Now.ToString();
+                CollectionReference postStepRef = firestoreDb.Collection("PostStep");
 
-//                DocumentReference userRef = firestoreDb.Collection("User").Document(userToUpdate.UserId);
+                Dictionary<string, object> postStepDict = new Dictionary<string, object>
+                    {
+                        { "Description", newStep.Description},
+                        { "StepImage", newStep.StepImage},
+                        { "StepName", newStep.StepName},
+                        { "StepNumber", newStep.StepNumber},
+                        { "UserPostId", newStep.UserPostId},
+                        { "timeNeeded", newStep.TimeNeeded}
+                    };
 
-//                Dictionary<string, object> updates = new Dictionary<string, object>
-//                {
-//                    { "age", userToUpdate.Age },
-//                    { "name", userToUpdate.Name },
-//                    { "password", Hashing.HashPassword($"{userToUpdate.Password}{saltEdit}")},
-//                    { "username", userToUpdate.Username },
-//                    { "email", userToUpdate.Email },
-//                    { "role", userToUpdate.Role },
-//                    { "salt", saltEdit }
-//                };
+                await postStepRef.AddAsync(postStepDict);
 
-//                await userRef.UpdateAsync(updates);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al crear el usuario: {ex.Message}");
+                return false;
+            }
+        }
 
-//                return true;
-//            }
-//            catch (Exception ex)
-//            {
-//                Console.WriteLine($"Error al editar el usuario: {ex.Message}");
-//                return false;
-//            }
-//        }
+        public async Task<bool> EditStep(PostStep stepToUpdate)
+        {
+            if (string.IsNullOrEmpty(stepToUpdate.PostStepId))
+            {
+                Console.WriteLine("PostStepId no puede estar vacío al editar un usuario.");
+                return false;
+            }
 
-//        public async Task<List<User>> GetAllUsers()
-//        {
-//            List<User> users = new List<User>();
+            try
+            {
+                DocumentReference postStepRef = firestoreDb.Collection("PostStep").Document(stepToUpdate.PostStepId);
 
-//            try
-//            {
-//                Query userQuery = firestoreDb.Collection("User");
-//                QuerySnapshot userQuerySnapShot = await userQuery.GetSnapshotAsync();
+                Dictionary<string, object> postStepDict = new Dictionary<string, object>
+                    {
+                        { "Description", stepToUpdate.Description},
+                        { "StepImage", stepToUpdate.StepImage},
+                        { "StepName", stepToUpdate.StepName},
+                        { "StepNumber", stepToUpdate.StepNumber},
+                        { "UserPostId", stepToUpdate.UserPostId},
+                        { "timeNeeded", stepToUpdate.TimeNeeded}
+                    };
 
-//                foreach (DocumentSnapshot documentSnapShot in userQuerySnapShot.Documents)
-//                {
-//                    if (documentSnapShot.Exists)
-//                    {
-//                        Dictionary<string, object> user = documentSnapShot.ToDictionary();
-//                        string json = JsonConvert.SerializeObject(user);
+                await postStepRef.UpdateAsync(postStepDict);
 
-//                        User loopUser = JsonConvert.DeserializeObject<User>(json);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al editar el usuario: {ex.Message}");
+                return false;
+            }
+        }
 
-//                        loopUser.UserId = documentSnapShot.Id;
+        public async Task<bool> EditSteps(List<PostStep> stepsToUpdate)
+        {
+            if (stepsToUpdate.Count <= 0)
+            {
+                Console.WriteLine("PostStepId no puede estar vacío al editar un usuario.");
+                return false;
+            }
 
-//                        users.Add(loopUser);
-//                    }
-//                }
-//            }
-//            catch (Exception ex)
-//            {
-//                Console.WriteLine($"Error al obtener todos los usuarios: {ex.Message}");
-//                return users;
-//            }
-//            return users;
-//        }
+            try
+            {
+                foreach (var item in stepsToUpdate)
+                {
+                    if (item.PostStepId == null)
+                    {
+                        await CreateStep(item); continue;
+                    }
 
-//        public async Task<> GetUserById(string userId)
-//        {
-//            User user = null;
+                    await EditStep(item);
+                }
 
-//            try
-//            {
-//                DocumentReference docRef = firestoreDb.Collection("User").Document(userId);
-//                DocumentSnapshot documentSnapShot = await docRef.GetSnapshotAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al editar el usuario: {ex.Message}");
+                return false;
+            }
+        }
 
-//                if (documentSnapShot.Exists)
-//                {
-//                    Dictionary<string, object> userData = documentSnapShot.ToDictionary();
-//                    string json = JsonConvert.SerializeObject(userData);
+        public async Task<List<PostStep>> GetAllSteps()
+        {
+            List<PostStep> steps = new List<PostStep>();
 
-//                    user = JsonConvert.DeserializeObject<User>(json);
+            try
+            {
+                Query postStepQuery = firestoreDb.Collection("PostStep");
+                QuerySnapshot postStepQuerySnapShot = await postStepQuery.GetSnapshotAsync();
 
-//                    user.UserId = userId;
-//                }
-//            }
-//            catch (Exception ex)
-//            {
-//                Console.WriteLine($"Error al obtener el usuario con el id: {ex.Message}");
-//            }
+                foreach (DocumentSnapshot documentSnapShot in postStepQuerySnapShot.Documents)
+                {
+                    if (documentSnapShot.Exists)
+                    {
+                        Dictionary<string, object> postStep = documentSnapShot.ToDictionary();
+                        string json = JsonConvert.SerializeObject(postStep);
 
-//            return user;
-//        }
+                        PostStep loopPostStep = JsonConvert.DeserializeObject<PostStep>(json);
 
-//        public async Task<bool> DeleteUser(string userId)
-//        {
-//            try
-//            {
-//                DocumentReference userRef = firestoreDb.Collection("User").Document(userId);
-//                await userRef.DeleteAsync();
+                        loopPostStep.PostStepId = documentSnapShot.Id;
 
-//                return true;
-//            }
-//            catch (Exception ex)
-//            {
-//                Console.WriteLine($"Error al borrar el usuario: {ex.Message}");
-//                return false;
-//            }
-//        }
-//    }
-//}
+                        steps.Add(loopPostStep);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener todos los pasos: {ex.Message}");
+                return steps;
+            }
+            return steps;
+        }
+
+        public async Task<PostStep> GetPostStepById(string postStepId)
+        {
+            PostStep step = null;
+
+            try
+            {
+                DocumentReference docRef = firestoreDb.Collection("PostStep").Document(postStepId);
+                DocumentSnapshot documentSnapShot = await docRef.GetSnapshotAsync();
+
+                if (documentSnapShot.Exists)
+                {
+                    Dictionary<string, object> userData = documentSnapShot.ToDictionary();
+                    string json = JsonConvert.SerializeObject(userData);
+
+                    step = JsonConvert.DeserializeObject<PostStep>(json);
+
+                    step.PostStepId = postStepId;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener el usuario con el id: {ex.Message}");
+            }
+
+            return step;
+        }
+
+        public async Task<bool> DeletePostSteps(List<PostStep> stepsToDelete)
+        {
+            try
+            {
+                foreach (PostStep postStep in stepsToDelete)
+                {
+                    DocumentReference postStepRef = firestoreDb.Collection("PostStep").Document(postStep.PostStepId);
+                    await postStepRef.DeleteAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al borrar el paso: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> DeletePostStep(string postStepId)
+        {
+            try
+            {
+                DocumentReference postStepRef = firestoreDb.Collection("PostStep").Document(postStepId);
+                await postStepRef.DeleteAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al borrar el paso: {ex.Message}");
+                return false;
+            }
+        }
+
+        #endregion
+    }
+}

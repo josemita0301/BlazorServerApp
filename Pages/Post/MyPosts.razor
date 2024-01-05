@@ -1,4 +1,6 @@
-﻿@using BlazorServerApp.Authentication
+﻿@page "/my-posts"
+
+@using BlazorServerApp.Authentication
 @using BlazorServerApp.Controllers;
 @using BlazorServerApp.Models.PostsModels;
 @using System.Security.Claims
@@ -18,11 +20,8 @@
                 <div class="post-title">
                     <div class="post-title" data-title="@post.CraftName">@post.CraftName</div>
                 </div>
-                <AuthorizeView Roles="Administrator">
-                    <Authorized>
-                        <button class="delete-post-btn" @onclick="() => DeletePost(post.UserPostId)">Eliminar</button>
-                    </Authorized>
-                </AuthorizeView>
+
+                <button class="delete-post-btn" @onclick="() => DeletePost(post.UserPostId)">Eliminar</button>
             </div>
             <div class="post-media">
                 @if (!string.IsNullOrWhiteSpace(post.VideoLink))
@@ -35,29 +34,20 @@
                 }
                 else
                 {
-                    <img  alt="Default Image">
+                    <img src="placeholder-image.jpg" alt="Default Image">
                 }
             </div>
             <div class="post-details">
                 <p class="post-description">@post.PostDescription</p>
                 <p class="post-date">@post.PublishDate</p>
+
                 <p class="post-difficulty">Difficulty: @post.Difficulty</p>
                 <p class="post-stepcount">Steps: @post.StepCount</p>
-                <button class="view-post-btn" @onclick="(() => ViewPost(post.UserPostId))">Ver Post</button>
-
-                @if (UserId != null)
-                {
-                    if (UserId.Equals(post.UserId))
-                    {
-                        <button class="view-post-btn" @onclick="(() => EditPost(post.UserPostId))">Editar Post</button>
-                    }
-
-                }
+                <button class="view-post-btn" @onclick="(() => EditPost(post.UserPostId))">Editar Post</button>
             </div>
         </div>
     }
 </div>
-
 @code {
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
@@ -65,20 +55,9 @@
     private ClaimsPrincipal AuthenticationStateUser { get; set; }
     private ClaimsPrincipal AuthenticationStateProviderUser { get; set; }
 
-    private string UserId { get; set; } = null;
-
     private List<UserPost> posts = new List<UserPost>();
 
     PostController postController = new PostController();
-
-    [Parameter]
-    public string EventName { get; set; }
-
-    [Parameter]
-    public string SearchTerm { get; set; }
-
-    [Parameter]
-    public string EventDate { get; set; }
 
     public string PostToDelete { get; set; }
 
@@ -94,29 +73,11 @@
         this.AuthenticationStateProviderUser = authenticationState.User;
         var authState = authenticationState;
 
-        if (authState.User.Identity.IsAuthenticated)
-        {
-            UserId = (authState.User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value).ToString();
-        }
-
-
         List<UserPost> postsNotFiltered = await postController.GetAllPosts();
 
-        if (!string.IsNullOrEmpty(EventDate))
+        if (authState.User.Identity.IsAuthenticated)
         {
-            posts = postsNotFiltered.Where(p => p.CraftName.Equals(EventDate)).ToList();
-        }
-        else if (!string.IsNullOrEmpty(EventName))
-        {
-            posts = postsNotFiltered.Where(p => p.CraftName.Equals(EventName)).ToList();
-        }
-        else if (!string.IsNullOrEmpty(SearchTerm))
-        {
-            posts = postsNotFiltered.Where(p => p.CraftName.Equals(SearchTerm)).ToList();
-        }
-        else
-        {
-            posts = postsNotFiltered;
+            posts = postsNotFiltered.Where(p => p.UserId == (authState.User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value).ToString()).ToList();
         }
 
     }
@@ -135,13 +96,8 @@
         NavManager.NavigateTo("/", true);
     }
 
-    public async Task EditPost(string UserPostId)
+    public async Task EditPost(string userPostId)
     {
-        NavManager.NavigateTo($"/create-post/{UserPostId}");
-    }
-
-    public async Task ViewPost(string UserPostId)
-    {
-        NavManager.NavigateTo($"/view-post/{UserPostId}");
+        NavManager.NavigateTo($"/create-post/{userPostId}");
     }
 }

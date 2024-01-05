@@ -16,8 +16,8 @@ namespace BlazorServerApp.Controllers
             firestoreDb = FirestoreDb.Create("blazorserverdb");
         }
 
-        #region CRUD User
-        public async Task<bool> CreatePost(UserPost newPost)
+        #region CRUD Post
+        public async Task<string> CreatePost(UserPost newPost)
         {
             try
             {
@@ -28,7 +28,8 @@ namespace BlazorServerApp.Controllers
         {
             { "CraftName", newPost.CraftName },
             { "Difficulty", newPost.Difficulty },
-            { "EventDateId", newPost.EventDateId },
+            { "EventDate", newPost.EventDate },
+            { "EventName", newPost.EventName },
             { "IsPublic", newPost.IsPublic },
             { "PostDescription", newPost.PostDescription },
             { "PublishDate", newPost.PublishDate },
@@ -39,14 +40,14 @@ namespace BlazorServerApp.Controllers
             // La propiedad Image no se agrega porque mencionaste que no debe aparecer
         };
 
-                await postsRef.AddAsync(postDict);
+                DocumentReference docRef = await postsRef.AddAsync(postDict);
 
-                return true;
+                return docRef.Id;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al crear el post: {ex.Message}");
-                return false;
+                return null;
             }
         }
 
@@ -62,22 +63,23 @@ namespace BlazorServerApp.Controllers
             {
                 DocumentReference postRef = firestoreDb.Collection("UserPost").Document(postToUpdate.UserPostId);
 
-                Dictionary<string, object> updates = new Dictionary<string, object>
-        {
-            { "CraftName", postToUpdate.CraftName },
-            { "Difficulty", postToUpdate.Difficulty },
-            { "EventDateId", postToUpdate.EventDateId },
-            { "IsPublic", postToUpdate.IsPublic },
-            { "PostDescription", postToUpdate.PostDescription },
-            { "PublishDate", postToUpdate.PublishDate },
-            { "Rating", postToUpdate.Rating },
-            { "StepCount", postToUpdate.StepCount },
-            { "UserId", postToUpdate.UserId },
-            { "VideoLink", postToUpdate.VideoLink },
-            // La propiedad Image no se actualiza porque mencionaste que no debe aparecer
-        };
+                Dictionary<string, object> postUpdated = new Dictionary<string, object>
+                {
+                    { "CraftName", postToUpdate.CraftName },
+                    { "Difficulty", postToUpdate.Difficulty },
+                    { "EventDate", postToUpdate.EventDate },
+                    { "EventName", postToUpdate.EventName },
+                    { "IsPublic", postToUpdate.IsPublic },
+                    { "PostDescription", postToUpdate.PostDescription },
+                    { "PublishDate", postToUpdate.PublishDate },
+                    { "Rating", postToUpdate.Rating },
+                    { "StepCount", postToUpdate.StepCount },
+                    { "UserId", postToUpdate.UserId },
+                    { "VideoLink", postToUpdate.VideoLink },
+                    // La propiedad Image no se actualiza porque mencionaste que no debe aparecer
+                };
 
-                await postRef.UpdateAsync(updates);
+                await postRef.UpdateAsync(postUpdated);
 
                 return true;
             }
@@ -196,5 +198,126 @@ namespace BlazorServerApp.Controllers
         }
 
         #endregion
+
+        #region PostValidations
+
+        public bool ValidateStepTimeDifficulty(int difficulty, int totalTime)
+        {
+            if (difficulty == 1)
+            {
+                if (totalTime > 5)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else if (difficulty == 2)
+            {
+                if (totalTime > 10)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else if (difficulty == 3)
+            {
+                if (totalTime > 20)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else if (difficulty == 4)
+            {
+                if (totalTime > 30)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else if (difficulty == 5)
+            {
+                if (totalTime > 60)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else if (difficulty == 6)
+            {
+                if (totalTime > 90)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else if (difficulty == 7)
+            {
+                if (totalTime > 120)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else if (difficulty == 8)
+            {
+                if (totalTime > 180)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else if (difficulty == 9)
+            {
+                if (totalTime > 240)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else if (difficulty == 10)
+            {
+                if (totalTime > 600 || totalTime > 600)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
     }
+
 }

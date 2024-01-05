@@ -1,0 +1,105 @@
+﻿@page "/filtered-search"
+@using BlazorServerApp.Authentication
+@using BlazorServerApp.Models
+@using BlazorServerApp.Models.PostsModels
+@using BlazorServerApp.Services
+@using System.Security.Claims
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavManager
+@inject IToastService ToastService
+
+<div class="filter-section">
+    <div class="filter-controls">
+        <div class="filter-controls">
+            <div class="filter-price">
+                <label for="dateFrom">Fecha desde: </label>
+                <input @bind="dateFrom" class="price-input" id="dateFrom" />
+            </div>
+
+            <div class="filter-price">
+                <label for="dateTo">Fecha Hasta: </label>
+                <input @bind="dateTo" class="price-input" id="dateTo" />
+            </div>
+
+            <button @onclick="RealizarFiltrado" class="search-advanced-btn">Búsqueda y reporte</button>
+        </div>
+    </div>
+</div>
+
+<div class="posts-container">
+    @foreach (var post in posts)
+    {
+        <div class="post">
+            <div class="post-header">
+                <div class="post-title">
+                    <div class="post-title" data-title="@post.CraftName">@post.CraftName</div>
+                </div>
+            </div>
+            <div class="post-media">
+                @if (!string.IsNullOrWhiteSpace(post.VideoLink))
+                {
+                    <iframe class="post-iframe" src="@post.VideoLink" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                }
+                else if (post.Image != null && post.Image.Any())
+                {
+                    <img src="@post.Image.First()" alt="Post Image">
+                }
+                else
+                {
+                    <img alt="Default Image">
+                }
+            </div>
+            <div class="post-details">
+                <p class="post-description">@post.PostDescription</p>
+                <p class="post-date">@post.PublishDate</p>
+                <p class="post-difficulty">Difficulty: @post.Difficulty</p>
+                <p class="post-stepcount">Steps: @post.StepCount</p>
+                <button class="view-post-btn" @onclick="(() => ViewPost(post.UserPostId))">Ver Post</button>
+            </div>
+        </div>
+    }
+</div>
+
+<div>
+    <table class="table-custom">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in matrials)
+            {
+                <tr>
+                    <td>@item.Nombre</td>
+                    <td>@item.Cantidad</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@code {
+    private string dateFrom { get; set; }
+    private string dateTo { get; set; }
+
+    private List<UserPost> posts { get; set; } = new List<UserPost>();
+    private List<MaterialFilter> matrials { get; set; } = new List<MaterialFilter>();
+
+    private async void RealizarFiltrado()
+    {
+
+        posts = await RecommendationService.GetFilteredPosts(dateFrom, dateTo);
+        matrials = await RecommendationService.GetMostUsedMaterials(dateFrom, dateTo);
+
+        StateHasChanged();
+    }
+
+    public async Task ViewPost(string UserPostId)
+    {
+        NavManager.NavigateTo($"/view-post/{UserPostId}");
+    }
+}

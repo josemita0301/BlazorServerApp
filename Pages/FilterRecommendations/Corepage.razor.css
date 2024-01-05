@@ -1,0 +1,234 @@
+﻿.filter-section {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.filter-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-price label,
+.filter-difficulty label,
+.filter-material label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.price-input,
+.difficulty-select,
+.material-name-input,
+.material-quantity-input {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.material-name-input {
+    flex-grow: 2;
+}
+
+.material-quantity-input {
+    max-width: 100px;
+}
+
+.add-material-btn {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    margin-right: 10px;
+}
+
+    .add-material-btn:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .add-material-btn:active {
+        background-color: #1e7e34;
+        transform: translateY(1px);
+    }
+
+.search-advanced-btn {
+    padding: 10px 20px;
+    background-color: #a29bfe;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+    .search-advanced-btn:hover {
+        background-color: #957fe8;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-advanced-btn:active {
+        background-color: #816fd0;
+        transform: translateY(1px);
+    }
+
+.divider {
+    height: 24px;
+    width: 1px;
+    background-color: #000f;
+    margin: 4px 10px;
+}
+
+.material-tag {
+    background-color: #e9ecef; /* Color de fondo para los tags de material */
+    border-radius: 16px;
+    padding: 6px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    margin-right: 5px; /* Añade un pequeño margen a la derecha */
+    cursor: default;
+}
+
+    .material-tag .remove-tag {
+        display: inline-block;
+        color: #dc3545;
+        cursor: pointer;
+        font-size: 18px;
+        margin-left: 8px; /* Espacio entre el nombre del material y el icono de eliminar */
+    }
+
+.post-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.post {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.post-media iframe, .post-media img {
+    width: 100%;
+    display: block;
+}
+
+.post-media iframe {
+    height: 300px;
+}
+
+.post-media img {
+    height: auto;
+}
+
+.post-details {
+    padding: 10px;
+    text-align: center;
+}
+
+.post-title {
+    font-size: 24px;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    margin-right: 60px;
+    position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+
+    .post-title:hover::after {
+        content: attr(data-title);
+        font-size: 16px;
+        position: absolute;
+        width: 100%;
+        left: 0;
+        top: 100%;
+        white-space: normal;
+        overflow: visible;
+        background-color: white;
+        padding: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        border-radius: 4px;
+        display: block;
+        text-overflow: clip;
+        max-height: none;
+        z-index: 2;
+    }
+
+.view-post-btn {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 10px auto;
+}
+
+.delete-post-btn {
+    padding: 0px 10px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: background-color 0.3s;
+}
+
+    .delete-post-btn:hover {
+        background-color: #a71d2a;
+    }
+
+
+/* Estilos adicionales para que el diseño sea responsivo */
+@media (max-width: 768px) {
+    .material-tags {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .add-material-btn,
+    .search-advanced-btn {
+        width: 100%;
+        margin-top: 10px;
+        margin-right: 0;
+    }
+
+    .divider {
+        display: none;
+    }
+}

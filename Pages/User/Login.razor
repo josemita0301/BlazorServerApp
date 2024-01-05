@@ -12,9 +12,10 @@
 
 <div class="login-container">
     <div class="login-card">
-        <h2>Iniciar Sesión</h2>
-        <SpinLoader IsLoading="isLoading" Center="true" Color="#d1c7e9" ></SpinLoader>
+
+        <SpinLoader IsLoading="isLoading" Center="true" Color="#d1c7e9"></SpinLoader>
         <div class="login-form">
+            <h2>Iniciar Sesión</h2>
             <label for="email">Correo Electrónico/ Usuario:</label>
             <input @bind="userToLogin.Email" type="email" placeholder="ejemplo@correo.com" />
 
@@ -28,6 +29,10 @@
                 <span>|</span>
                 <a href="@UrlHelper.GoToResetPassword()">Restablecer contraseña</a>
             </div>
+        </div>
+
+        <div class="login-image">
+            <img src="https://ae01.alicdn.com/kf/H80a0baded1a24c888d0bbb06b0a6a0062/Azulejos-de-mosaico-cuadrados-de-cer-mica-para-manualidades-1x1cm-500-unidades.jpg" />
         </div>
     </div>
 </div>
@@ -49,7 +54,7 @@
     public async void LoginUserToApp()
     {
         isLoading = true;
-        if(attempts != 1)
+        if (attempts != 1)
         {
             UserController userController = new UserController();
             if (await userController.LoginUser(userToLogin, (CustomAuthenticationStateProvider)CustomAuthStateProvider))

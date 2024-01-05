@@ -18,7 +18,10 @@ namespace BlazorServerApp.Models.PostsModels
         public int Difficulty { get; set; }
 
         [FirestoreProperty]
-        public string EventDateId { get; set; }
+        public string EventDate { get; set; }
+
+        [FirestoreProperty]
+        public string EventName { get; set; }
 
         [FirestoreProperty]
         public bool IsPublic { get; set; }
