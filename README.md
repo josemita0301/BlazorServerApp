@@ -157,3 +157,47 @@ Fin del Programa: El proceso concluye, ya sea con el acceso al sistema o con un 
 
 </p>
 
+<h1>Roles y Administrción</h1>
+<p>
+    En el útlimo commit lo que se ha implementado ha sido la adminsitración y los roles ya que en este caso la admisnitración se la trata como un rol. En funcionamiento es bastante sencillo ya que se ha incluido un campo en la base de datos que hace referencia a este rol del usuario y con ayuda de los componentes de autorización de blazor se ha logrado personalizar vistas y validar acciones por parte del adminsitrador.
+</p>
+<p>
+    Además este no ha sido el único rol que se ha implmeentado, ya que tememos otros roles como el de técnico, team para los cuales todavia no hay funciones asignadas; y el más común que es el de usuario para cualquer persona que se registre en la plataforma
+</p>
+<h2>Acciones del Administrador</h2>
+<ul>
+    <li><strong>Inicio de Sesión del Administrador</strong>
+        <ul>
+            <li>Accede a un menú personalizado.</li>
+        </ul>
+    </li>
+    <li><strong>Gestión de Usuarios</strong>
+        <ul>
+            <li>Visualiza una lista de todos los usuarios.</li>
+            <li>Opciones para cada usuario:
+                <ul>
+                    <li>Eliminar usuario.</li>
+                    <li>Editar usuario.</li>
+                    <li>Registrar un nuevo usuario.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Asignación de Roles</strong>
+        <ul>
+            <li>Al crear un usuario, el administrador asigna roles (técnico, team, creador de contenido).</li>
+        </ul>
+    </li>
+    <li><strong>Visualización de Usuarios por Rol</strong>
+        <ul>
+            <li>Ve cuántos usuarios hay en cada rol.</li>
+        </ul>
+    </li>
+    <li><strong>Gestión de Contenidos</strong>
+        <ul>
+            <li>Opción para eliminar publicaciones de cualquier usuario desde la pantalla de inicio.</li>
+        </ul>
+    </li>
+</ul>
+<h2>Diagrama de interacción</h2>
+<img src="AdminsitracionMVC.png" style = "align-center">
