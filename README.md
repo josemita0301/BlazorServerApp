@@ -245,3 +245,27 @@ Fin del Programa: El proceso concluye, ya sea con el acceso al sistema o con un 
 </ul>
 <h2>Diagrama de Actividades de la Búsqueda Avanzada</h2>
 <img src="BusquedaAvanzadaDiagrama.png" style="align-center">
+
+<h1>Filtrado por Fechas y Reporte de Materiales en la Aplicación de Manualidades</h1>
+<p>
+    La nueva funcionalidad de filtrado por fechas permite a los usuarios buscar posts dentro de un rango de fechas específico. Además, genera un reporte detallado de los materiales más utilizados en las manualidades publicadas en ese periodo, mostrando un top 10 de estos materiales por nombre y cantidad.
+</p>
+<h2>Funcionalidad de Filtrado y Reporte</h2>
+<ul>
+    <li><strong>Selección del Rango de Fechas</strong>
+        <ul>
+            <li>Los usuarios pueden definir un rango de fechas introduciendo una fecha de inicio y una de fin.</li>
+        </ul>
+    </li>
+    <li><strong>Generación de Reportes</strong>
+        <ul>
+            <li>El sistema recopila y analiza los datos de los posts en el rango de fechas seleccionado.</li>
+            <li>Se genera un reporte de los 10 materiales más usados, incluyendo nombres y cantidades.</li>
+        </ul>
+    </li>
+</ul>
+<h2>Diagrama de Actividades del Filtrado por Fechas</h2>
+<p>
+    A continuación se muestra el diagrama de actividades que representa el proceso de filtrado por fechas y la generación del reporte de materiales:
+</p>
+<img src="DiagramaFiltradoFechas.png" style="align-center">
