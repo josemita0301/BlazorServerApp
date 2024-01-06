@@ -201,3 +201,47 @@ Fin del Programa: El proceso concluye, ya sea con el acceso al sistema o con un 
 </ul>
 <h2>Diagrama de interacción</h2>
 <img src="AdminsitracionMVC.png" style = "align-center">
+
+
+<h1>Funcionalidad de Búsqueda Avanzada en la Aplicación de Manualidades</h1>
+<p>
+    La última actualización de nuestra aplicación incluye una característica de búsqueda avanzada, diseñada para mejorar la experiencia del usuario en nuestra red social de manualidades. Esta funcionalidad permite a los usuarios buscar manualidades basándose en criterios específicos como el precio estimado de la manualidad, el nivel de dificultad, y los materiales disponibles.
+</p>
+<p>
+    Esta funcionalidad es especialmente útil para los usuarios que buscan inspiración para proyectos dentro de un presupuesto específico, o que quieren encontrar proyectos que coincidan con su nivel de habilidad o los materiales que ya tienen.
+</p>
+<h2>Características de la Búsqueda Avanzada</h2>
+<ul>
+    <li><strong>Ingreso de Precio Estimado</strong>
+        <ul>
+            <li>Los usuarios pueden especificar un precio estimado para encontrar manualidades que se ajusten a su presupuesto.</li>
+        </ul>
+    </li>
+    <li><strong>Selección de Dificultad</strong>
+        <ul>
+            <li>Los proyectos se pueden filtrar por nivel de dificultad, desde principiante (1) hasta experto (5).</li>
+        </ul>
+    </li>
+    <li><strong>Filtrado por Materiales</strong>
+        <ul>
+            <li>Permite a los usuarios buscar proyectos basándose en los materiales que tienen a mano.</li>
+        </ul>
+    </li>
+</ul>
+<h2>Proceso de Búsqueda y Resultados</h2>
+<ul>
+    <li><strong>Procesamiento de Búsqueda</strong>
+        <ul>
+            <li>Calcula el costo total basado en los materiales y cantidades necesarias para cada proyecto.</li>
+            <li>Filtra los proyectos según la dificultad y los materiales especificados.</li>
+        </ul>
+    </li>
+    <li><strong>Presentación de Resultados</strong>
+        <ul>
+            <li>Muestra una lista de manualidades recomendadas y clasificadas por dificultad.</li>
+            <li>Incluye verificaciones para asegurar que hay proyectos disponibles en cada nivel de dificultad.</li>
+        </ul>
+    </li>
+</ul>
+<h2>Diagrama de Actividades de la Búsqueda Avanzada</h2>
+<img src="BusquedaAvanzadaDiagrama.png" style="align-center">
