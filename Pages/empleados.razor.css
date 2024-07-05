@@ -1,0 +1,35 @@
+﻿h3 {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.employee-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+
+    .employee-table thead tr {
+        background-color: #f2f2f2;
+        color: #333;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .employee-table th,
+    .employee-table td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+    }
+
+    .employee-table tbody tr:nth-of-type(even) {
+        background-color: #f9f9f9;
+    }
+
+    .employee-table tbody tr:hover {
+        background-color: #f1f1f1;
+        cursor: pointer;
+    }

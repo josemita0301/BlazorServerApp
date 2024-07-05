@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+#Archivitos importantes
+BlazorServerApp/Config/blazorserverdb-firebase-adminsdk-d6ztc-72ee8cbfb5.json

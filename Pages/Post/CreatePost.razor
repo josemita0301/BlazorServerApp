@@ -1,13 +1,10 @@
 ﻿@page "/create-post"
 @page "/create-post/{UserPostId}"
-@using BlazorServerApp.Authentication
 @using BlazorServerApp.Controllers;
 @using BlazorServerApp.Models.PostsModels;
 @using BlazorServerApp.Models;
 @using System.Security.Claims
 @using BlazorServerApp.Services
-
-@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Create Post</PageTitle>
 
@@ -230,101 +227,101 @@
 
     private async void CreateOrEditPost()
     {
-        AuthenticationState authenticationState;
+        // AuthenticationState authenticationState;
 
-        authenticationState = await authenticationStateTask;
-        this.AuthenticationStateUser = authenticationState.User;
+        // authenticationState = await authenticationStateTask;
+        // this.AuthenticationStateUser = authenticationState.User;
 
-        var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
-        authenticationState = await customAuthStateProvider.GetAuthenticationStateAsync();
-        this.AuthenticationStateProviderUser = authenticationState.User;
-        var authState = authenticationState;
+        // var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+        // authenticationState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        // this.AuthenticationStateProviderUser = authenticationState.User;
+        // var authState = authenticationState;
 
-        post.PublishDate = DateTime.Now.ToString(format: "dd-MM-yyyy").Replace("-", "/");
+        // post.PublishDate = DateTime.Now.ToString(format: "dd-MM-yyyy").Replace("-", "/");
 
-        post.StepCount = steps.Count;
+        // post.StepCount = steps.Count;
 
-        if (authState.User.Identity.IsAuthenticated)
-        {
-            post.UserId = (authState.User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value).ToString();
-        }
+        // if (authState.User.Identity.IsAuthenticated)
+        // {
+        //     post.UserId = (authState.User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value).ToString();
+        // }
 
 
-        if (string.IsNullOrEmpty(UserPostId))
-        {
-            if(steps.Count == 0)
-            {
-                ToastService.ShowWarning("Debe de agregar al menos un paso");
-            }
-            if (materials.Count == 0)
-            {
-                ToastService.ShowWarning("Debe de agregar al menos un material");
-            }
-            post.UserPostId = await postController.CreatePost(post);
+        // if (string.IsNullOrEmpty(UserPostId))
+        // {
+        //     if(steps.Count == 0)
+        //     {
+        //         ToastService.ShowWarning("Debe de agregar al menos un paso");
+        //     }
+        //     if (materials.Count == 0)
+        //     {
+        //         ToastService.ShowWarning("Debe de agregar al menos un material");
+        //     }
+        //     post.UserPostId = await postController.CreatePost(post);
 
-            if (!string.IsNullOrEmpty(post.UserPostId))
-            {
-                foreach (PostStep step in steps)
-                {
-                    step.UserPostId = post.UserPostId;
+        //     if (!string.IsNullOrEmpty(post.UserPostId))
+        //     {
+        //         foreach (PostStep step in steps)
+        //         {
+        //             step.UserPostId = post.UserPostId;
 
-                    foreach (var item in step.StepMaterials)
-                    {
-                        item.PrecioUnitarioDivisa = "USD";
-                    }
-                }
+        //             foreach (var item in step.StepMaterials)
+        //             {
+        //                 item.PrecioUnitarioDivisa = "USD";
+        //             }
+        //         }
 
-                await postStepController.CreateSteps(steps);
-                ToastService.ShowSuccess("Publicación creada con éxito");
-                NavManager.NavigateTo("/", true);
-            }
+        //         await postStepController.CreateSteps(steps);
+        //         ToastService.ShowSuccess("Publicación creada con éxito");
+        //         NavManager.NavigateTo("/", true);
+        //     }
 
-            else
-                ToastService.ShowError("Error al crear la publicación");
+        //     else
+        //         ToastService.ShowError("Error al crear la publicación");
 
-        }
-        else
-        {
-            foreach (var item in stepsToDelete)
-            {
-                steps.Remove(item);
-            }
+        // }
+        // else
+        // {
+        //     foreach (var item in stepsToDelete)
+        //     {
+        //         steps.Remove(item);
+        //     }
 
-            foreach (var item in materialsToDelete)
-            {
-                foreach (var step in steps)
-                {
-                    step.StepMaterials.Remove(item);
-                }
-            }
+        //     foreach (var item in materialsToDelete)
+        //     {
+        //         foreach (var step in steps)
+        //         {
+        //             step.StepMaterials.Remove(item);
+        //         }
+        //     }
 
-            int stepNumber = 1;
+        //     int stepNumber = 1;
 
-            foreach (var step in steps)
-            {
-                step.UserPostId = post.UserPostId;
-                step.StepNumber = stepNumber++;
-            }
+        //     foreach (var step in steps)
+        //     {
+        //         step.UserPostId = post.UserPostId;
+        //         step.StepNumber = stepNumber++;
+        //     }
 
-            await postStepController.DeletePostSteps(stepsToDelete);
-            await postStepController.EditSteps(steps);
+        //     await postStepController.DeletePostSteps(stepsToDelete);
+        //     await postStepController.EditSteps(steps);
 
-            await materialController.DeleteMaterials(materialsToDelete);
-            await materialController.EditMaterials(materials);
+        //     await materialController.DeleteMaterials(materialsToDelete);
+        //     await materialController.EditMaterials(materials);
 
-            post.StepCount = steps.Count;
+        //     post.StepCount = steps.Count;
 
-            var result = await postController.EditPost(post);
+        //     var result = await postController.EditPost(post);
 
-            if (result)
-            {
-                ToastService.ShowSuccess("Publicación modificada con éxito");
-                NavManager.NavigateTo("/", true);
-            }
-            else
-                ToastService.ShowError("Error al modificar la publicación");
-        }
-        //}
+        //     if (result)
+        //     {
+        //         ToastService.ShowSuccess("Publicación modificada con éxito");
+        //         NavManager.NavigateTo("/", true);
+        //     }
+        //     else
+        //         ToastService.ShowError("Error al modificar la publicación");
+        // }
+        // //}
     }
 
     private void AddNewStep()
@@ -379,8 +376,9 @@
         else
         {
             GlobalEvent = true;
-            post.EventName = eventosSelector.Where(e => e.EventId == selectedValue).FirstOrDefault().Nombre;
-            post.EventDate = eventosSelector.Where(e => e.EventId == selectedValue).FirstOrDefault().Fecha;
+
+            post.EventName = "";
+            post.EventDate = "";
         }
     }
 }

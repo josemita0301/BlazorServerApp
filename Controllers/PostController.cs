@@ -1,7 +1,5 @@
-﻿using BlazorServerApp.Authentication;
-using BlazorServerApp.Models.PostsModels;
+﻿using BlazorServerApp.Models.PostsModels;
 using BlazorServerApp.Models.Users;
-using BlazorServerAppServices.Helpers;
 using Google.Cloud.Firestore;
 using Newtonsoft.Json;
 
@@ -304,7 +302,7 @@ namespace BlazorServerApp.Controllers
             }
             else if (difficulty == 10)
             {
-                if (totalTime > 600 || totalTime > 600)
+                if (totalTime > 600)
                 {
                     return false;
                 }

@@ -1,7 +1,5 @@
-﻿using BlazorServerApp.Authentication;
-using BlazorServerApp.Models.Users;
+﻿using BlazorServerApp.Models.Users;
 using BlazorServerApp.Pages.User;
-using BlazorServerAppServices.Helpers;
 using Firebase.Auth;
 using Google.Cloud.Firestore;
 using Google.Protobuf.WellKnownTypes;
@@ -43,7 +41,7 @@ namespace BlazorServerApp.Controllers
                 {
                     { "age", newUser.Age },
                     { "name", newUser.Name },
-                    { "password", Hashing.HashPassword($"{newUser.Password}{saltCreate}")},
+                    { "password", newUser.Password},
                     { "username", newUser.Username },
                     { "email", newUser.Email },
                     { "role", newUser.Role },
@@ -80,7 +78,7 @@ namespace BlazorServerApp.Controllers
                 {
                     { "age", userToUpdate.Age },
                     { "name", userToUpdate.Name },
-                    { "password", Hashing.HashPassword($"{userToUpdate.Password}{saltEdit}")},
+                    { "password", userToUpdate.Password },
                     { "username", userToUpdate.Username },
                     { "email", userToUpdate.Email },
                     { "role", userToUpdate.Role },
@@ -177,58 +175,6 @@ namespace BlazorServerApp.Controllers
 
         #region Login
 
-        public async Task<bool> LoginUser(UserToLogin userToLogin, CustomAuthenticationStateProvider customAuthStateProvider)
-        {
-            try
-            {
-                // Consulta para el correo
-                Query emailQuery = firestoreDb.Collection("User").WhereEqualTo("email", userToLogin.Email);
-                QuerySnapshot emailQuerySnapshot = await emailQuery.GetSnapshotAsync();
-
-                // Consulta para el nombre de usuario
-                Query usernameQuery = firestoreDb.Collection("User").WhereEqualTo("username", userToLogin.Email);
-                QuerySnapshot usernameQuerySnapshot = await usernameQuery.GetSnapshotAsync();
-
-                DocumentSnapshot userDocument = null;
-
-                if (emailQuerySnapshot.Documents.Count > 0)
-                {
-                    userDocument = emailQuerySnapshot.Documents[0];
-                }
-                else if (usernameQuerySnapshot.Documents.Count > 0)
-                {
-                    userDocument = usernameQuerySnapshot.Documents[0];
-                }
-
-                if (userDocument != null)
-                {
-                    Dictionary<string, object> userData = userDocument.ToDictionary();
-                    string json = JsonConvert.SerializeObject(userData);
-
-                    User userFromDb = JsonConvert.DeserializeObject<User>(json);
-                    userFromDb.UserId = userDocument.Id;
-                    userToLogin.Role = userFromDb.Role;
-                    userToLogin.id = userFromDb.UserId;
-
-                    if (Hashing.HashPassword($"{userToLogin.Password}{userFromDb.Salt}") == userFromDb.Password)
-                    {
-                        await customAuthStateProvider.UpdateAuthenticationState(userToLogin);
-                        return true;
-                    }
-                    else 
-                        return false;
-                }
-                else
-                {
-                    return false; // No se encontró el usuario con ese correo o nombre de usuario
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al crear el usuario: {ex.Message}");
-                return false;
-            }
-        }
         #endregion
     }
 }

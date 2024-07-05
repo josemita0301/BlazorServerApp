@@ -1,10 +1,7 @@
-﻿@using BlazorServerApp.Authentication;
-@using Blazored.Toast
+﻿@using Blazored.Toast
 @using Blazored.Toast.Configuration;
-@using BlazorServerAppServices.Helpers
 @inherits LayoutComponentBase
 
-@inject AuthenticationStateProvider CustomAuthStateProvider
 @inject NavigationManager navManager
 
 <BlazoredToasts Position="ToastPosition.BottomRight"
@@ -21,26 +18,13 @@
 <PageTitle>BlazorServerApp</PageTitle>
 
 <div class="page">
-    <AuthorizeView>
-        <Authorized>
-            <div class="sidebar">
-                <NavMenu />
-            </div>
-        </Authorized>
-    </AuthorizeView>
-        
+
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+
     <main>
-        <div class="top-row px-4">
-            <AuthorizeView>
-                <Authorized>
-                    <a @onclick="ViewMyProfile" class="top-row-link"><i class="fa fa-user-circle"></i> Mi perfil</a>
-                    <a @onclick="CloseSession" class="top-row-link"><i class="fa fa-sign-out-alt"></i> Cerrar sesión</a>
-                </Authorized>
-                <NotAuthorized>
-                    <a href="@UrlHelper.GoToLogin()" class="top-row-link"><i class="fa fa-sign-in-alt"></i> Iniciar sesión</a>
-                </NotAuthorized>
-            </AuthorizeView>
-        </div>
 
         <article>
             @Body
@@ -50,24 +34,5 @@
 
 @code {
 
-    protected override async Task OnInitializedAsync()
-    {
-
-    }
-
-    protected async Task ViewMyProfile()
-    {
-        var authState = await CustomAuthStateProvider.GetAuthenticationStateAsync();
-
-        navManager.NavigateTo($"/register/{authState.User.Identity.Name}", true);
-
-    }
-
-    private async Task CloseSession()
-    {
-        var customAuthStateProvider = (CustomAuthenticationStateProvider)CustomAuthStateProvider;
-        await customAuthStateProvider.UpdateAuthenticationState(null);
-
-        navManager.NavigateTo("/", true);
-    }
 }
+

@@ -1,11 +1,9 @@
 ﻿@page "/advanced-search"
-@using BlazorServerApp.Authentication
 @using BlazorServerApp.Models
 @using BlazorServerApp.Models.PostsModels
 @using BlazorServerApp.Services
 @using System.Security.Claims
 
-@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavManager
 @inject IToastService ToastService
 
@@ -153,7 +151,7 @@
 
     private async void RealizarBusquedaAvanzada()
     {
-        if((double)precio == 0.00 || materialesSeleccionados.Count == 0)
+        if((double)precio >= 0.00 || materialesSeleccionados.Count == 0)
         {
             ToastService.ShowWarning("Coloque un precio estimado y al menos un material");
         }
@@ -162,19 +160,15 @@
         authenticationState = await authenticationStateTask;
         this.AuthenticationStateUser = authenticationState.User;
 
-        var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
-        authenticationState = await customAuthStateProvider.GetAuthenticationStateAsync();
-        this.AuthenticationStateProviderUser = authenticationState.User;
-        var authState = authenticationState;
 
-        if (authState.User.Identity.IsAuthenticated)
-        {
-            bigList = await  RecommendationService.GetRecommendedData(materialesSeleccionados, (double)precio, dificultad, (authState.User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value).ToString());
-        }
-        else
-        {
-            bigList= await RecommendationService.GetRecommendedData(materialesSeleccionados, (double)precio, dificultad, null);
-        }
+        // if (authState.User.Identity.IsAuthenticated)
+        // {
+        //     bigList = await  RecommendationService.GetRecommendedData(materialesSeleccionados, (double)precio, dificultad, (authState.User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value).ToString());
+        // }
+        // else
+        // {
+        //     bigList= await RecommendationService.GetRecommendedData(materialesSeleccionados, (double)precio, dificultad, null);
+        // }
 
         count = 0;
 

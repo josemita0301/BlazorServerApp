@@ -1,13 +1,11 @@
 ﻿@page "/my-posts"
 
-@using BlazorServerApp.Authentication
 @using BlazorServerApp.Controllers;
 @using BlazorServerApp.Models.PostsModels;
 @using System.Security.Claims
 
 @inject NavigationManager NavManager
 @inject IToastService ToastService
-@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <br />
 <br />
@@ -49,11 +47,6 @@
     }
 </div>
 @code {
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
-
-    private ClaimsPrincipal AuthenticationStateUser { get; set; }
-    private ClaimsPrincipal AuthenticationStateProviderUser { get; set; }
 
     private List<UserPost> posts = new List<UserPost>();
 
@@ -63,22 +56,18 @@
 
     protected override async Task OnInitializedAsync()
     {
-        AuthenticationState authenticationState;
 
-        authenticationState = await authenticationStateTask;
-        this.AuthenticationStateUser = authenticationState.User;
+        // var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+        // authenticationState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        // this.AuthenticationStateProviderUser = authenticationState.User;
+        // var authState = authenticationState;
 
-        var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
-        authenticationState = await customAuthStateProvider.GetAuthenticationStateAsync();
-        this.AuthenticationStateProviderUser = authenticationState.User;
-        var authState = authenticationState;
+        // List<UserPost> postsNotFiltered = await postController.GetAllPosts();
 
-        List<UserPost> postsNotFiltered = await postController.GetAllPosts();
-
-        if (authState.User.Identity.IsAuthenticated)
-        {
-            posts = postsNotFiltered.Where(p => p.UserId == (authState.User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value).ToString()).ToList();
-        }
+        // if (authState.User.Identity.IsAuthenticated)
+        // {
+        //     posts = postsNotFiltered.Where(p => p.UserId == (authState.User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value).ToString()).ToList();
+        // }
 
     }
 

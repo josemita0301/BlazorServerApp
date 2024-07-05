@@ -1,6 +1,4 @@
-﻿@using BlazorServerApp.Authentication;
-@inject AuthenticationStateProvider authStateProvider
-@inject NavigationManager navManager
+﻿@inject NavigationManager navManager
 
 
 <div class="top-row ps-3 navbar navbar-dark">
@@ -12,108 +10,91 @@
     </div>
 </div>
 
-<AuthorizeView Roles="User">
-    <Authorizing>
-        <h1>...</h1>
-    </Authorizing>
-    <Authorized>
-        <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-            <nav class="flex-column">
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                        <span class="oi oi-home" aria-hidden="true"></span> Inicio
-                    </NavLink>
-                </div>
 
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/my-posts">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Mis Publicaciones
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/create-post">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Nuevo Post
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/advanced-search">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Búsqueda Avanzada
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/filtered-search">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Defensa
-                    </NavLink>
-                </div>
-            </nav>
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Inicio
+            </NavLink>
         </div>
-    </Authorized>
-</AuthorizeView>
 
-<AuthorizeView Roles="Administrator">
-    <Authorizing>
-        <h1>...</h1>
-    </Authorizing>
-
-    <Authorized>
-            <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-            <nav class="flex-column">
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                        <span class="oi oi-home" aria-hidden="true"></span> Inicio
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/my-posts">
-                        <span class="oi oi-plus" aria-hidden="true"></span>Mis Publicaciones
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/users">
-                        <span class="oi oi-list" aria-hidden="true"></span> Publicaciones
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/users">
-                        <span class="oi oi-list" aria-hidden="true"></span> Usuarios
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/register">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Crear usuario
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/create-post">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Nuevo Post
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/advanced-search">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Búsqueda Avanzada
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/filtered-search">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Búsqueda Avanzada
-                    </NavLink>
-                </div>
-            </nav>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/my-posts">
+                <span class="oi oi-plus" aria-hidden="true"></span>Mis Publicaciones
+            </NavLink>
         </div>
-    </Authorized>
-</AuthorizeView>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/users">
+                <span class="oi oi-list" aria-hidden="true"></span> Publicaciones
+            </NavLink>
+        </div>
+
+        <AuthorizeView Roles="Admin">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/users">
+                    <span class="oi oi-list" aria-hidden="true"></span> Usuarios
+                </NavLink>
+            </div>
+        </AuthorizeView>
+        
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/register">
+                <span class="oi oi-plus" aria-hidden="true"></span> Crear usuario
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/create-post">
+                <span class="oi oi-plus" aria-hidden="true"></span> Nuevo Post
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/advanced-search">
+                <span class="oi oi-plus" aria-hidden="true"></span> Búsqueda Avanzada
+            </NavLink>
+        </div>
+
+        <AuthorizeView>
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/employees">
+                        <span class="oi oi-people" aria-hidden="true"></span>Empleados de App2
+                    </NavLink>
+                </div>
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/profile">
+                        <span class="oi oi-person" aria-hidden="true"></span>Profile
+                    </NavLink>
+                </div>
+
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/logout">
+                        <span class="oi oi-account-login" aria-hidden="true"></span> Salir
+                    </NavLink>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/login?redirectUri=/">
+                        <span class="oi oi-account-logout" aria-hidden="true"></span> Login
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+
+    </nav>
+</div>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    public string userName = "Hello";
 
     private bool collapseNavMenu = true;
 
@@ -123,4 +104,17 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (authenticationState is not null)
+        {
+            var state = await authenticationState;
+
+            userName = state?.User?.Identity?.Name ?? string.Empty;
+        }
+
+        await base.OnInitializedAsync();
+    }
+
 }
